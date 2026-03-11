@@ -736,8 +736,6 @@ function renderSidebar() {
 function renderMain() {
   const sel = getSelected();
   const main = document.getElementById("main-content");
-  document.getElementById("empty-title").textContent = currentView === "rep" ? "SELECT A REP" : "SELECT A STORE";
-
   if (!sel) {
     main.innerHTML = `<div class="empty-state">
       <div class="empty-title">${currentView === "rep" ? "SELECT A REP" : "SELECT A STORE"}</div>
