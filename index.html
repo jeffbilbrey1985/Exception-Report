@@ -31,6 +31,11 @@
   .bar-row-labels{display:flex;justify-content:space-between;font-size:10px;margin-bottom:3px;}
   .bar-track{height:6px;border-radius:3px;background:#1e2030;overflow:hidden;}
   .bar-fill{height:100%;border-radius:3px;transition:width 0.4s ease;}
+  .search-wrap{position:relative;margin-bottom:12px;}
+  .search-input{width:100%;background:#16161f;border:1px solid #1e2030;border-radius:8px;padding:8px 12px 8px 32px;font-family:inherit;font-size:12px;color:#cbd5e1;outline:none;transition:border-color 0.2s;}
+  .search-input::placeholder{color:#334155;}
+  .search-input:focus{border-color:#6366f1;}
+  .search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#475569;font-size:13px;pointer-events:none;}
   .list-label{font-size:10px;color:#475569;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px;}
   .list-item{cursor:pointer;padding:10px 14px;border-radius:8px;border:1px solid #1e2030;transition:all 0.15s;margin-bottom:6px;background:#16161f;}
   .list-item:hover{border-color:#334155;background:#1a1a24;}
@@ -55,7 +60,18 @@
   .section-label{font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;}
   .tag{display:inline-block;background:#1e2030;border:1px solid #2d3148;color:#94a3b8;border-radius:6px;padding:2px 8px;font-size:10px;margin:2px;letter-spacing:0.5px;}
   .rep-tag{display:inline-block;border-radius:6px;padding:2px 8px;font-size:11px;margin:2px;}
-  .empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:#334155;}
+  .lob-pill{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:500;margin:2px;letter-spacing:0.5px;background:#1e2030;color:#94a3b8;border:1px solid #2d3148;}
+  .acct-table{width:100%;border-collapse:collapse;font-size:11px;margin-top:4px;}
+  .acct-table th{text-align:left;color:#64748b;font-weight:400;padding:4px 8px;border-bottom:1px solid #1e2030;text-transform:uppercase;letter-spacing:1px;font-size:10px;}
+  .acct-table td{padding:5px 8px;border-bottom:1px solid rgba(30,32,48,0.5);color:#cbd5e1;vertical-align:top;}
+  .acct-table tr:last-child td{border-bottom:none;}
+  .acct-table tr:hover td{background:rgba(255,255,255,0.02);}
+  .lob-hsi{background:#1e3a5f;color:#60a5fa;border-color:#1d4ed8;}
+  .lob-video{background:#3b1f5e;color:#c084fc;border-color:#7c3aed;}
+  .lob-xfm{background:#3b1a1a;color:#f87171;border-color:#dc2626;}
+  .lob-xhs{background:#1a3320;color:#4ade80;border-color:#16a34a;}
+  .lob-cdv{background:#1a2e3b;color:#38bdf8;border-color:#0284c7;}
+  .lob-other{background:#1e2030;color:#94a3b8;border-color:#334155;}
   .empty-title{font-family:'Syne',sans-serif;font-size:40px;font-weight:800;color:#1e2030;margin-bottom:12px;}
   .empty-sub{font-size:13px;letter-spacing:1px;}
 </style>
@@ -90,6 +106,10 @@
       <div id="top-issues-chart"></div>
     </div>
     <div class="list-label" id="list-label">Reps</div>
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input class="search-input" id="search-input" type="text" placeholder="Search by name..." oninput="onSearch()"/>
+    </div>
     <div id="list-container"></div>
   </div>
 
@@ -652,6 +672,7 @@ function issueBorder(k) { return (ISSUE_INFO[k]||{border:"#cbd5e1"}).border; }
 let currentView = "rep";
 let selectedKey  = null;
 let expandedIssue = null;
+let searchQuery  = "";
 
 // ── Build stats ───────────────────────────────────────────────────────────────
 function buildRepStats() {
@@ -661,10 +682,15 @@ function buildRepStats() {
     if (!map[rep]) map[rep] = { key: rep, label: rep, sub: row.store, issues: {}, allRows: [] };
     map[rep].allRows.push(row);
     const k = getIssueKey(row);
-    if (!map[rep].issues[k]) map[rep].issues[k] = { count:0, customerIds: new Set(), workOrders: new Set() };
+    if (!map[rep].issues[k]) map[rep].issues[k] = { count:0, customerIds: new Set(), workOrders: new Set(), lobMap: {} };
     map[rep].issues[k].count++;
     map[rep].issues[k].customerIds.add(row.customerId);
     map[rep].issues[k].workOrders.add(row.workOrder);
+    if (row.lob) {
+      const cid = row.customerId;
+      if (!map[rep].issues[k].lobMap[cid]) map[rep].issues[k].lobMap[cid] = new Set();
+      map[rep].issues[k].lobMap[cid].add(row.lob);
+    }
   });
   return Object.values(map).sort((a,b) => b.allRows.length - a.allRows.length);
 }
@@ -677,10 +703,15 @@ function buildStoreStats() {
     map[s].allRows.push(row);
     if (row.rep) map[s].reps.add(row.rep);
     const k = getIssueKey(row);
-    if (!map[s].issues[k]) map[s].issues[k] = { count:0, customerIds: new Set(), workOrders: new Set() };
+    if (!map[s].issues[k]) map[s].issues[k] = { count:0, customerIds: new Set(), workOrders: new Set(), lobMap: {} };
     map[s].issues[k].count++;
     map[s].issues[k].customerIds.add(row.customerId);
     map[s].issues[k].workOrders.add(row.workOrder);
+    if (row.lob) {
+      const cid = row.customerId;
+      if (!map[s].issues[k].lobMap[cid]) map[s].issues[k].lobMap[cid] = new Set();
+      map[s].issues[k].lobMap[cid].add(row.lob);
+    }
   });
   return Object.values(map).sort((a,b) => b.allRows.length - a.allRows.length);
 }
@@ -723,14 +754,21 @@ function renderSidebar() {
     </div>`).join("");
 
   // List
-  document.getElementById("list-container").innerHTML = getStats().map(s => `
+  const q = searchQuery.toLowerCase();
+  const filtered = getStats().filter(s => !q || s.label.toLowerCase().includes(q));
+  const countLabel = q ? `${filtered.length} of ${getStats().length}` : getStats().length;
+  document.getElementById("list-label").textContent = currentView === "rep"
+    ? `Reps (${countLabel})` : `Stores (${countLabel})`;
+  document.getElementById("list-container").innerHTML = filtered.length
+    ? filtered.map(s => `
     <div class="list-item ${s.key === selectedKey ? 'active' : ''}" onclick="selectItem('${s.key.replace(/'/g,"\\'")}')">
       <div class="list-item-name">${s.label}</div>
       <div class="list-item-sub">${currentView === "rep"
         ? `${s.sub} · <span style="color:#f97316">${s.allRows.length} exceptions</span>`
         : `<span style="color:#f97316">${s.allRows.length} exceptions</span> · ${s.reps.size} reps`
       }</div>
-    </div>`).join("");
+    </div>`).join("")
+    : `<div style="color:#475569;font-size:12px;padding:12px;text-align:center;">No results for "${searchQuery}"</div>`;
 }
 
 function renderMain() {
@@ -782,12 +820,22 @@ function renderMain() {
       <div class="issue-body" style="border-top:1px solid ${issueBorder(k)}">
         <div class="issue-desc"><strong style="color:${issueColor(k)}">What this means:</strong> ${info.description||"See report for details."}</div>
         <div style="margin-bottom:10px">
-          <div class="section-label">Affected Customer IDs (${cids.length})</div>
-          <div>${cids.map(id => `<span class="tag">${id}</span>`).join("")}</div>
-        </div>
-        <div>
-          <div class="section-label">Work Orders (${wos.length})</div>
-          <div>${wos.map(wo => `<span class="tag">${wo}</span>`).join("")}</div>
+          <div class="section-label">Customer Account Numbers &amp; Line of Business (${cids.length})</div>
+          <table class="acct-table">
+            <thead><tr><th>Account Number</th><th>Work Order</th><th>Line of Business</th></tr></thead>
+            <tbody>${cids.map(cid => {
+              const wo = [...(d.workOrders)].find(w => {
+                return sel.allRows.some(r => r.customerId === cid && r.workOrder === w && getIssueKey(r) === k);
+              }) || "—";
+              const lobs = d.lobMap[cid] ? [...d.lobMap[cid]].sort() : [];
+              const lobHTML = lobs.map(l => {
+                const cls = l === "HSI" ? "lob-hsi" : l === "Video" ? "lob-video" : l === "XFM" ? "lob-xfm" : l === "XHS" ? "lob-xhs" : l === "CDV" ? "lob-cdv" : "lob-other";
+                return `<span class="lob-pill ${cls}">${l}</span>`;
+              }).join("");
+              return `<tr><td>${cid}</td><td style="color:#64748b;font-size:10px">${wo}</td><td>${lobHTML}</td></tr>`;
+            }).join("")}
+            </tbody>
+          </table>
         </div>
         ${repBreakdown}
       </div>` : "";
@@ -823,12 +871,19 @@ function render() {
 }
 
 // ── Event handlers ────────────────────────────────────────────────────────────
+function onSearch() {
+  searchQuery = document.getElementById("search-input").value;
+  renderSidebar();
+}
+
 function switchView(v) {
   currentView  = v;
   selectedKey  = null;
   expandedIssue = null;
+  searchQuery  = "";
   document.getElementById("btn-rep").classList.toggle("active",   v === "rep");
   document.getElementById("btn-store").classList.toggle("active", v === "store");
+  document.getElementById("search-input").value = "";
   render();
 }
 
