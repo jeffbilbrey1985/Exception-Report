@@ -1,563 +1,74 @@
-<html lang="en"><head><script>(function(firebaseConfig, initialAuthToken, appId) {
-        window.__firebase_config = firebaseConfig;
-        window.__initial_auth_token = initialAuthToken;
-        window.__app_id = appId;
-            })("\n{\n  \"apiKey\": \"AIzaSyCqyCcs2R2e7AegGjvFAwG98wlamtbHvZY\",\n  \"authDomain\": \"bard-frontend.firebaseapp.com\",\n  \"projectId\": \"bard-frontend\",\n  \"storageBucket\": \"bard-frontend.firebasestorage.app\",\n  \"messagingSenderId\": \"175205271074\",\n  \"appId\": \"1:175205271074:web:2b7bd4d34d33bf38e6ec7b\"\n}\n","eyJhbGciOiJSUzI1NiIsImtpZCI6ImQzMmE5NGU0NjFmNjZhODQ0YWFhYTY1NjdiZWM4OWY2NWIzMzg0ODQiLCJ0eXAiOiJKV1QifQ.eyJzdWIiOiJmaXJlYmFzZS1hZG1pbnNkay1mYnN2Y0BiYXJkLWZyb250ZW5kLmlhbS5nc2VydmljZWFjY291bnQuY29tIiwiYXVkIjoiaHR0cHM6Ly9pZGVudGl0eXRvb2xraXQuZ29vZ2xlYXBpcy5jb20vZ29vZ2xlLmlkZW50aXR5LmlkZW50aXR5dG9vbGtpdC52MS5JZGVudGl0eVRvb2xraXQiLCJ1aWQiOiIxNzMxNDk4Njk4NTk5MDE0MTQ1MSIsImlzcyI6ImZpcmViYXNlLWFkbWluc2RrLWZic3ZjQGJhcmQtZnJvbnRlbmQuaWFtLmdzZXJ2aWNlYWNjb3VudC5jb20iLCJjbGFpbXMiOnsiYXBwSWQiOiJjXzliOGMwMzA5MmY3ZTVlMTZfRXhjZXB0aW9ucy5odG1sLTkzMiJ9LCJleHAiOjE3NzM3MjY2MDQsImlhdCI6MTc3MzcyMzAwNCwiYWxnIjoiUlMyNTYifQ.Gvww9VX8Me8OjmC6Tk_201cYMynOXSrX-qukvclS_M8N7Z677QTjRorbe4jKNhqNjL-B3YTduj5k6dS5pN7iGaohX_I7Dd-m_E3tF-0EPOq2mSjq5TB7e7lgTaSJA2XkcTM7bWFpPl24-2rr0hqp2wwSYJnPOztDwMfjahg3ePxRrM8nsAsTWsurpHOmzjLLjCDBeMwfgHwqrrASMa5nkW5Tri0oYaI_WTq54MxtBOON_Ip2wzeNe0Gw4LG1pomGszZRQ3ef4kl5jPSlcETFwklxFW8vE-eSfuCgJ5TvJMWKpOkB53B5N5a0v7QvwGZQ7VZrUsT7_ZhGl-XuKZk1RA","c_9b8c03092f7e5e16_Exceptions.html-932")</script><script>(function(){'use strict';var h=typeof Object.defineProperties=="function"?Object.defineProperty:function(a,b,d){if(a==Array.prototype||a==Object.prototype)return a;a[b]=d.value;return a};function l(a){a=["object"==typeof globalThis&&globalThis,a,"object"==typeof window&&window,"object"==typeof self&&self,"object"==typeof global&&global];for(var b=0;b<a.length;++b){var d=a[b];if(d&&d.Math==Math)return d}throw Error("Cannot find global object");}var n=l(this);
-function p(a,b){if(b)a:{var d=n;a=a.split(".");for(var c=0;c<a.length-1;c++){var e=a[c];if(!(e in d))break a;d=d[e]}a=a[a.length-1];c=d[a];b=b(c);b!=c&&b!=null&&h(d,a,{configurable:!0,writable:!0,value:b})}}function r(a){function b(c){return a.next(c)}function d(c){return a.throw(c)}return new Promise(function(c,e){function f(g){g.done?c(g.value):Promise.resolve(g.value).then(b,d).then(f,e)}f(a.next())})}function t(a){return r(a())}
-p("Object.values",function(a){return a?a:function(b){var d=[],c;for(c in b)Object.prototype.hasOwnProperty.call(b,c)&&d.push(b[c]);return d}});p("Array.prototype.includes",function(a){return a?a:function(b,d){var c=this;c instanceof String&&(c=String(c));var e=c.length;d=d||0;for(d<0&&(d=Math.max(d+e,0));d<e;d++){var f=c[d];if(f===b||Object.is(f,b))return!0}return!1}});/*
-
- MIT License
-
- Copyright (c) 2017-2023 W.Y.
-
- Permission is hereby granted, free of charge, to any person obtaining a copy
- of this software and associated documentation files (the "Software"), to deal
- in the Software without restriction, including without limitation the rights
- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Software, and to permit persons to whom the Software is
- furnished to do so, subject to the following conditions:
-
- The above copyright notice and this permission notice shall be included in
- all copies or substantial portions of the Software.
-
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- SOFTWARE.
-
-*/
-function u(a,b){const d=a.style;b.backgroundColor&&(d.backgroundColor=b.backgroundColor);b.width&&(d.width=`${b.width}px`);b.height&&(d.height=`${b.height}px`);const c=b.style;c!=null&&Object.keys(c).forEach(e=>{d[e]=c[e]})};var v=(()=>{let a=0;return()=>{a+=1;return`u${`0000${(Math.random()*1679616<<0).toString(36)}`.slice(-4)}${a}`}})();function w(a){const b=[];for(let d=0,c=a.length;d<c;d++)b.push(a[d]);return b}let x=null;function y(a={}){return x?x:a.l?x=a.l:x=w(window.getComputedStyle(document.documentElement))}function z(a,b){return(a=(a.ownerDocument.defaultView||window).getComputedStyle(a).getPropertyValue(b))?parseFloat(a.replace("px","")):0}
-function A(a,b={}){var d;if(!(d=b.width)){d=z(a,"border-left-width");var c=z(a,"border-right-width");d=a.clientWidth+d+c}(b=b.height)||(b=z(a,"border-top-width"),c=z(a,"border-bottom-width"),b=a.clientHeight+b+c);return{width:d,height:b}}function B(a){return new Promise((b,d)=>{const c=new Image;c.onload=()=>{c.decode().then(()=>{requestAnimationFrame(()=>b(c))})};c.onerror=d;c.crossOrigin="anonymous";c.decoding="async";c.src=a})}
-function C(a){return t(function*(){return Promise.resolve().then(()=>(new XMLSerializer).serializeToString(a)).then(encodeURIComponent).then(b=>`data:image/svg+xml;charset=utf-8,${b}`)})}
-function D(a,b,d){return t(function*(){const c=document.createElementNS("http://www.w3.org/2000/svg","svg"),e=document.createElementNS("http://www.w3.org/2000/svg","foreignObject");c.setAttribute("width",`${b}`);c.setAttribute("height",`${d}`);c.setAttribute("viewBox",`0 0 ${b} ${d}`);e.setAttribute("width","100%");e.setAttribute("height","100%");e.setAttribute("x","0");e.setAttribute("y","0");e.setAttribute("externalResourcesRequired","true");c.appendChild(e);e.appendChild(a);return C(c)})}
-var E=(a,b)=>{if(a instanceof b)return!0;a=Object.getPrototypeOf(a);return a===null?!1:a.constructor.name===b.name||E(a,b)};function F(a,b){return y(b).map(d=>{const c=a.getPropertyValue(d),e=a.getPropertyPriority(d);return`${d}: ${c}${e?" !important":""};`}).join(" ")}
-function G(a,b,d,c){a=window.getComputedStyle(a,d);var e=a.getPropertyValue("content");if(e!==""&&e!=="none"){var f=v();try{b.className=`${b.className} ${f}`}catch(k){return}e=document.createElement("style");var g=e.appendChild;d=`.${f}:${d}`;a.cssText?(c=a.getPropertyValue("content"),c=`${a.cssText} content: '${c.replace(/'|"/g,"")}';`):c=F(a,c);g.call(e,document.createTextNode(`${d}{${c}}`));b.appendChild(e)}};function H(a){return a.search(/^(data:)/)!==-1}function I(a,b,d){return t(function*(){const c=yield fetch(a,b);if(c.status===404)throw Error(`Resource "${c.url}" not found`);const e=yield c.blob();return new Promise((f,g)=>{const k=new FileReader;k.onerror=g;k.onloadend=()=>{try{f(d({o:c,result:k.result}))}catch(m){g(m)}};k.readAsDataURL(e)})})}const J={};function K(a,b,d){let c=a.replace(/\?.*/,"");d&&(c=a);/ttf|otf|eot|woff2?/i.test(c)&&(c=c.replace(/.*\//,""));return b?`[${b}]${c}`:c}
-function L(a,b,d){return t(function*(){const c=K(a,b,d.C);if(J[c]!=null)return J[c];d.u&&(a+=(/\?/.test(a)?"&":"?")+(new Date).getTime());let e;try{const f=yield I(a,d.i,({o:g,result:k})=>{b||(b=g.headers.get("Content-Type")||"");return k.split(/,/)[1]});e=`data:${b};base64,${f}`}catch(f){e=d.B||""}return J[c]=e})};const M={P:"application/font-woff",R:"application/font-woff",N:"application/font-truetype",v:"application/vnd.ms-fontobject",H:"image/png",F:"image/jpeg",D:"image/jpeg",A:"image/gif",M:"image/tiff",L:"image/svg+xml",O:"image/webp"};function N(a){return(a=/\.([^./]*?)$/g.exec(a))?a[1]:""};function O(a){return t(function*(){const b=a.toDataURL();return b==="data:,"?a.cloneNode(!1):B(b)})}function aa(a,b){return t(function*(){if(a.currentSrc){var d=document.createElement("canvas");const c=d.getContext("2d");d.width=a.clientWidth;d.height=a.clientHeight;c==null||c.drawImage(a,0,0,d.width,d.height);d=d.toDataURL();return B(d)}d=a.poster;d=yield L(d,M[N(d).toLowerCase()]||"",b);return B(d)})}
-function ba(a,b){return t(function*(){try{let d;if(a==null?0:(d=a.contentDocument)==null?0:d.body)return yield P(a.contentDocument.body,b,!0)}catch(d){}return a.cloneNode(!1)})}function ca(a,b){return t(function*(){return E(a,HTMLCanvasElement)?O(a):E(a,HTMLVideoElement)?aa(a,b):E(a,HTMLIFrameElement)?ba(a,b):a.cloneNode(a.tagName!=null&&a.tagName.toUpperCase()==="SVG")})}
-function da(a,b,d){return t(function*(){if(b.tagName!=null&&b.tagName.toUpperCase()==="SVG")return b;let c=[];if(a.tagName!=null&&a.tagName.toUpperCase()==="SLOT"&&a.assignedNodes)c=w(a.assignedNodes());else{let e;if(E(a,HTMLIFrameElement)&&((e=a.contentDocument)==null?0:e.body))c=w(a.contentDocument.body.childNodes);else{let f;c=w(((f=a.shadowRoot)!=null?f:a).childNodes)}}if(c.length===0||E(a,HTMLVideoElement))return b;yield c.reduce((e,f)=>e.then(()=>P(f,d)).then(g=>{g&&b.appendChild(g)}),Promise.resolve());
-return b})}function ea(a,b,d){const c=b.style;if(c){var e=window.getComputedStyle(a);e.cssText?(c.cssText=e.cssText,c.transformOrigin=e.transformOrigin):y(d).forEach(f=>{let g=e.getPropertyValue(f);f==="font-size"&&g.endsWith("px")&&(g=`${Math.floor(parseFloat(g.substring(0,g.length-2)))-.1}px`);E(a,HTMLIFrameElement)&&f==="display"&&g==="inline"&&(g="block");f==="d"&&b.getAttribute("d")&&(g=`path(${b.getAttribute("d")})`);c.setProperty(f,g,e.getPropertyPriority(f))})}}
-function fa(a,b){E(a,HTMLSelectElement)&&(b=Array.from(b.children).find(d=>a.value===d.getAttribute("value")))&&b.setAttribute("selected","")}
-function ha(a,b){return t(function*(){var d=a.querySelectorAll?a.querySelectorAll("use"):[];if(d.length===0)return a;var c={};for(var e=0;e<d.length;e++){var f=d[e].getAttribute("xlink:href");if(f){const g=document.querySelector(f);a.querySelector(f)||!g||c[f]||(c[f]=yield P(g,b,!0))}}d=Object.values(c);if(d.length){c=document.createElementNS("http://www.w3.org/1999/xhtml","svg");c.setAttribute("xmlns","http://www.w3.org/1999/xhtml");c.style.position="absolute";c.style.width="0";c.style.height="0";
-c.style.overflow="hidden";c.style.display="none";e=document.createElementNS("http://www.w3.org/1999/xhtml","defs");c.appendChild(e);for(f=0;f<d.length;f++)e.appendChild(d[f]);a.appendChild(c)}return a})}
-function P(a,b,d){return t(function*(){return d||!b.filter||b.filter(a)?Promise.resolve(a).then(c=>ca(c,b)).then(c=>da(a,c,b)).then(c=>{E(c,Element)&&(ea(a,c,b),G(a,c,":before",b),G(a,c,":after",b),E(a,HTMLTextAreaElement)&&(c.textContent=a.value),E(a,HTMLInputElement)&&c.setAttribute("value",a.value),fa(a,c));return c}).then(c=>ha(c,b)):null})};const Q=/url\((['"]?)([^'"]+?)\1\)/g,ia=/url\([^)]+\)\s*format\((["']?)([^"']+)\1\)/g,ja=/src:\s*(?:url\([^)]+\)\s*format\([^)]+\)[,;]\s*)+/g;function ka(a){const b=[];a.replace(Q,(d,c,e)=>{b.push(e);return d});return b.filter(d=>!H(d))}
-function la(a,b,d,c){return t(function*(){try{const e=d?(new URL(b,d||void 0)).toString():b;let f;f=yield L(e,M[N(b).toLowerCase()]||"",c);return a.replace(new RegExp(`(url\\(['"]?)(${b.replace(/([.*+?^${}()|\[\]\/\\])/g,"\\$1")})(['"]?\\))`,"g"),`$1${f}$3`)}catch(e){}return a})}function ma(a,{I:b}){return b?a.replace(ja,d=>{for(;;){const [c,,e]=ia.exec(d)||[],f=c,g=e;if(!g)return"";if(g===b)return`src: ${f};`}}):a}
-function R(a,b,d){return t(function*(){if(a.search(Q)===-1)return a;const c=ma(a,d);return ka(c).reduce((e,f)=>e.then(g=>la(g,f,b,d)),Promise.resolve(c))})};function S(a,b,d){return t(function*(){var c;const e=(c=b.style)==null?void 0:c.getPropertyValue(a);return e?(c=yield R(e,null,d),b.style.setProperty(a,c,b.style.getPropertyPriority(a)),!0):!1})}function na(a,b){return t(function*(){(yield S("background",a,b))||(yield S("background-image",a,b));(yield S("mask",a,b))||(yield S("-webkit-mask",a,b))||(yield S("mask-image",a,b))||(yield S("-webkit-mask-image",a,b))})}
-function oa(a,b){return t(function*(){const d=E(a,HTMLImageElement);if(d&&!H(a.src)||E(a,SVGImageElement)&&!H(a.href.baseVal)){var c=d?a.src:a.href.baseVal,e=yield L(c,M[N(c).toLowerCase()]||"",b);yield new Promise((f,g)=>{a.onload=f;a.onerror=b.m?(...k)=>{try{f(b.m(...k))}catch(m){g(m)}}:g;a.decode&&(a.decode=f);a.loading==="lazy"&&(a.loading="eager");d?(a.srcset="",a.src=e):a.href.baseVal=e})}})}
-function pa(a,b){return t(function*(){const d=w(a.childNodes).map(c=>T(c,b));yield Promise.all(d).then(()=>a)})}function T(a,b){return t(function*(){E(a,Element)&&(yield na(a,b),yield oa(a,b),yield pa(a,b))})};const U={};function V(a){return t(function*(){var b=U[a];if(b!=null)return b;b=yield(yield fetch(a)).text();b={url:a,cssText:b};return U[a]=b})}function W(a,b){return t(function*(){let d=a.cssText;const c=/url\(["']?([^"')]+)["']?\)/g,e=(d.match(/url\([^)]+\)/g)||[]).map(f=>t(function*(){let g=f.replace(c,"$1");g.startsWith("https://")||(g=(new URL(g,a.url)).href);return I(g,b.i,({result:k})=>{d=d.replace(f,`url(${k})`);return[f,k]})}));return Promise.all(e).then(()=>d)})}
-function X(a){if(a==null)return[];const b=[];a=a.replace(/(\/\*[\s\S]*?\*\/)/gi,"");for(var d=RegExp("((@.*?keyframes [\\s\\S]*?){([\\s\\S]*?}\\s*?)})","gi");;){var c=d.exec(a);if(c===null)break;b.push(c[0])}a=a.replace(d,"");d=/@import[\s\S]*?url\([^)]*\)[\s\S]*?;/gi;for(c=RegExp("((\\s*?(?:\\/\\*[\\s\\S]*?\\*\\/)?\\s*?@media[\\s\\S]*?){([\\s\\S]*?)}\\s*?})|(([\\s\\S]*?){([\\s\\S]*?)})","gi");;){let e=d.exec(a);if(e===null)if(e=c.exec(a),e===null)break;else d.lastIndex=c.lastIndex;else c.lastIndex=
-d.lastIndex;b.push(e[0])}return b}
-function qa(a,b){return t(function*(){const d=[],c=[];a.forEach(e=>{if("cssRules"in e)try{w(e.cssRules||[]).forEach((f,g)=>{if(f.type===CSSRule.IMPORT_RULE){let k=g+1;f=V(f.href).then(m=>W(m,b)).then(m=>X(m).forEach(q=>{try{e.insertRule(q,q.startsWith("@import")?k+=1:e.cssRules.length)}catch(Da){}})).catch(()=>{});c.push(f)}})}catch(f){const g=a.find(k=>k.href==null)||document.styleSheets[0];e.href!=null&&c.push(V(e.href).then(k=>W(k,b)).then(k=>X(k).forEach(m=>{g.insertRule(m,g.cssRules.length)})).catch(()=>
-{}))}});return Promise.all(c).then(()=>{a.forEach(e=>{if("cssRules"in e)try{w(e.cssRules||[]).forEach(f=>{d.push(f)})}catch(f){}});return d})})}function ra(a){return a.filter(b=>b.type===CSSRule.FONT_FACE_RULE).filter(b=>b.style.getPropertyValue("src").search(Q)!==-1)}function sa(a,b){return t(function*(){if(a.ownerDocument==null)throw Error("Provided element is not within a Document");var d=w(a.ownerDocument.styleSheets);d=yield qa(d,b);return ra(d)})}
-function ta(a){function b(c){(c.style.fontFamily||getComputedStyle(c).fontFamily).split(",").forEach(e=>{d.add(e.trim().replace(/["']/g,""))});Array.from(c.children).forEach(e=>{e instanceof HTMLElement&&b(e)})}const d=new Set;b(a);return d}function ua(a,b){return t(function*(){const d=yield sa(a,b),c=ta(a);return(yield Promise.all(d.filter(e=>c.has(e.style.fontFamily.trim().replace(/["']/g,""))).map(e=>R(e.cssText,e.parentStyleSheet?e.parentStyleSheet.href:null,b)))).join("\n")})}
-function va(a,b){return t(function*(){const d=b.j!=null?b.j:b.K?null:yield ua(a,b);if(d){const c=document.createElement("style");c.appendChild(document.createTextNode(d));a.firstChild?a.insertBefore(c,a.firstChild):a.appendChild(c)}})};function wa(a,b={}){return t(function*(){const {width:d,height:c}=A(a,b),e=yield P(a,b,!0);yield va(e,b);yield T(e,b);u(e,b);return yield D(e,d,c)})}
-function xa(a,b={}){return t(function*(){const {width:d,height:c}=A(a,b);var e=yield wa(a,b);e=yield B(e);const f=document.createElement("canvas"),g=f.getContext("2d"),k=b.G||window.devicePixelRatio||1,m=b.h||d,q=b.g||c;f.width=m*k;f.height=q*k;!b.J&&(f.width>16384||f.height>16384)&&(f.width>16384&&f.height>16384?f.width>f.height?(f.height*=16384/f.width,f.width=16384):(f.width*=16384/f.height,f.height=16384):f.width>16384?(f.height*=16384/f.width,f.width=16384):(f.width*=16384/f.height,f.height=
-16384));f.style.width=`${m}`;f.style.height=`${q}`;b.backgroundColor&&(g.fillStyle=b.backgroundColor,g.fillRect(0,0,f.width,f.height));g.drawImage(e,0,0,f.width,f.height);return f})}function ya(a,b={}){return t(function*(){return(yield xa(a,b)).toDataURL()})};const za=["gemini.google.com","corp.google.com","proxy.googlers.com"];function Y(){return document.body.querySelectorAll('[class*="animate"]').length>0}function Z(a){return t(function*(){try{return yield ya(a,{h:a.offsetWidth,g:a.offsetHeight})}catch(d){var b=a.offsetHeight;const c=document.createElement("canvas");c.width=a.offsetWidth;c.height=b;return c.toDataURL("image/png")}})}
-function Aa(){return t(function*(){const a=document.body.offsetWidth,b=document.body.offsetHeight,d=document.body.cloneNode(!0);d.querySelectorAll('[class*="animate"]').forEach(c=>{c.classList.remove(...Array.from(c.classList).filter(e=>e.startsWith("animate")))});d.style.width=`${a}px`;d.style.height=`${b}px`;return d})}
-function Ba(a){return t(function*(){let b=document.body;if(Y()){var d=yield Aa();b=d;document.body.appendChild(d)}d=yield Z(b);Y()&&document.body.removeChild(b);window.parent.postMessage({type:"SEND_SCREENSHOT",image:d,topOffset:document.documentElement.scrollTop},a.origin)})}function Ca(a){return t(function*(){const b={type:"SEND_SCREENSHOT_FOR_DATA_VISUALIZATION",image:yield Z(document.body),topOffset:0};window.parent.postMessage(b,a.origin)})}
-window.addEventListener("message",a=>t(function*(){if(za.some(d=>a.origin.includes(d))){var b=a.data;b&&(b.type==="MAKE_SCREENSHOT"&&(yield Ba(a)),b.type==="MAKE_SCREENSHOT_FOR_DATA_VISUALIZATION"&&(yield Ca(a)))}}));
-})();</script><script>(function() {
-  // Ensure this script is executed only once
-  if (window.firebaseAuthBridgeScriptLoaded) {
-    return;
-  }
-  window.firebaseAuthBridgeScriptLoaded = true;
-
-  let nextTokenPromiseId = 0;
-
-  // Stores { resolve, reject } for ongoing token requests
-  const pendingTokenPromises = {};
-
-  // Listen for messages from the Host Application
-  window.addEventListener('message', function(event) {
-
-    const messageData = event.data;
-
-  if (messageData && messageData.type === 'RESOLVE_NEW_FIREBASE_TOKEN') {
-      const { success, token, error, promiseId } = messageData ?? {};
-      if (pendingTokenPromises[promiseId]) {
-        if (success) {
-          pendingTokenPromises[promiseId].resolve(token);
-        } else {
-          pendingTokenPromises[promiseId].reject(new Error(error || 'Token refresh failed from host.'));
-        }
-        delete pendingTokenPromises[promiseId];
-      }
-    }
-  });
-
-  // Expose a function for the Generated App to request a new Firebase token
-  window.requestNewFirebaseToken = function() {
-    const currentPromiseId = nextTokenPromiseId++;
-    const promise = new Promise((resolve, reject) => {
-      pendingTokenPromises[currentPromiseId] = { resolve, reject };
-    });
-    if (window.parent && window.parent !== window) {
-      window.parent.postMessage({
-        type: 'REQUEST_NEW_FIREBASE_TOKEN',
-        promiseId: currentPromiseId
-      }, '*');
-    } else {
-      pendingTokenPromises[currentPromiseId].reject(new Error('No parent window to request token from.'));
-      delete pendingTokenPromises[currentPromiseId];
-    }
-    return promise;
-  };
-})();</script><script>
-let realOriginalGetUserMedia = null;
-if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-  realOriginalGetUserMedia = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
-}
-
-(function() {
-  if (navigator.mediaDevices && navigator.mediaDevices.__proto__) {
-    try {
-      Object.defineProperty(navigator.mediaDevices.__proto__, 'getUserMedia', {
-        get: function() {
-          return undefined; // Or throw an error
-        },
-        configurable: false
-      });
-    } catch (error) {
-      console.error("Error defining prototype getter:", error);
-    }
-  }
-})();
-
-(function() {
-  const pendingMediaResolvers = {};
-  let nextMediaPromiseId = 0;
-
-  function requestMediaPermissions(constraints) {
-    const mediaPromiseId = nextMediaPromiseId++;
-    const promise = new Promise((resolve, reject) => {
-      pendingMediaResolvers[mediaPromiseId] = (granted) => {
-        delete pendingMediaResolvers[mediaPromiseId];
-        resolve(granted);
-      };
-    });
-
-    window.parent.postMessage({
-      type: 'requestMediaPermission',
-      constraints: constraints,
-      promiseId: mediaPromiseId,
-    }, '*');
-
-    return promise;
-  }
-
-  let originalGetUserMedia = realOriginalGetUserMedia;
-
-  function interceptGetUserMedia() {
-    if (navigator.mediaDevices) {
-      Object.defineProperty(navigator.mediaDevices, 'getUserMedia', {
-        value: function(constraints) {
-          return requestMediaPermissions(constraints).then((granted) => {
-            if (granted) {
-              if (originalGetUserMedia) {
-                return originalGetUserMedia(constraints);
-              } else {
-                throw new Error("Original getUserMedia not available.");
-              }
-            } else {
-              throw new DOMException('Permission denied', 'NotAllowedError');
-            }
-          });
-        },
-        writable: false,
-        configurable: false
-      });
-    }
-  }
-
-  interceptGetUserMedia();
-
-  const observer = new MutationObserver(function(mutationsList, observer) {
-    for (const mutation of mutationsList) {
-      if (mutation.type === 'reconfigured' && mutation.name === 'getUserMedia' && mutation.object === navigator.mediaDevices) {
-        interceptGetUserMedia();
-      } else if (mutation.type === 'attributes' && mutation.attributeName === 'getUserMedia' && mutation.target === navigator.mediaDevices) {
-        interceptGetUserMedia();
-      } else if (mutation.type === 'childList' && mutation.addedNodes) {
-        mutation.addedNodes.forEach(node => {
-          if (node === navigator.mediaDevices) {
-            interceptGetUserMedia();
-          }
-        });
-      }
-    }
-  });
-
-  function interceptSpeechRecognition() {
-    if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
-      return;
-    }
-
-    const OriginalSpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-
-    const SpeechRecognitionWrapper = function(...args) {
-      const recognizer = new OriginalSpeechRecognition(...args);
-      const originalStart = recognizer.start.bind(recognizer);
-
-      recognizer.start = function() {
-        requestMediaPermissions({ audio: true }).then(granted => {
-          if (granted) {
-            originalStart();
-          } else {
-            const errorEvent = new SpeechRecognitionErrorEvent('error');
-            errorEvent.error = 'not-allowed'; // This is the standard error for permission denial.
-            recognizer.dispatchEvent(errorEvent);
-          }
-        });
-      };
-
-      return recognizer;
-    };
-
-    SpeechRecognitionWrapper.prototype = OriginalSpeechRecognition.prototype;
-    SpeechRecognitionWrapper.prototype.constructor = SpeechRecognitionWrapper;
-
-    if (window.SpeechRecognition) {
-      window.SpeechRecognition = SpeechRecognitionWrapper;
-    }
-    if (window.webkitSpeechRecognition) {
-      window.webkitSpeechRecognition = SpeechRecognitionWrapper;
-    }
-  }
-
-  interceptSpeechRecognition();
-
-  window.addEventListener('message', function(event) {
-    if (event.data) {
-      if (event.data.type === 'resolveMediaPermission') {
-        const { promiseId, granted } = event.data;
-        if (pendingMediaResolvers[promiseId]) {
-          pendingMediaResolvers[promiseId](granted);
-        }
-      }
-    }
-  });
-
-})();</script><script>((function(modelInformation) {
-  const originalFetch = window.fetch;
-  // TODO: b/421908508 - Move these out of the script and match all generative AI model calls.
-  let googleLlmBaseApiUrls = [
-    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.textModelName + ':streamGenerateContent',
-    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.textModelName + ':generateContent',
-    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageModelName + ':predict',
-    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageModelName + ':predictLongRunning',
-    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageEditModelName + ':generateContent',
-    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageTransformModelName + ':generateContent',
-    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.videoModelName + ':predict',
-    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.videoModelName + ':predictLongRunning',
-    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.ttsModelName + ':generateContent',
-  ];
-  modelInformation.deprecatedTextModelNames.forEach((modelName) => {
-    googleLlmBaseApiUrls.push(
-      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':streamGenerateContent',
-      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent',
-    );
-  });
-  modelInformation.deprecatedImageModelNames.forEach((modelName) => {
-    googleLlmBaseApiUrls.push(
-      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':predict',
-      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':predictLongRunning',
-    );
-  });
-
-  const pendingFetchResolvers = {};
-  let nextPromiseId = 0;
-
-  function handleStringInput(input, optionsArgument) {
-    const actualUrl = input;
-    const fetchCallArgs = [actualUrl, optionsArgument];
-    const effectiveOptions = optionsArgument || {};
-    const bodyForApiKeyCheck = effectiveOptions.body;
-    const bodyForPostMessage = effectiveOptions.body;
-    return { actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage };
-  }
-
-  function handleRequestInput(input, optionsArgument) {
-    const actualUrl = input.url;
-    const fetchCallArgs = [input, optionsArgument];
-    const effectiveOptions = { method: input.method, headers: new Headers(input.headers) };
-    let bodyForApiKeyCheck;
-    let bodyForPostMessage;
-
-    if (optionsArgument) {
-      if (optionsArgument.method) effectiveOptions.method = optionsArgument.method;
-      if (optionsArgument.headers) effectiveOptions.headers = new Headers(optionsArgument.headers);
-      if ('body' in optionsArgument) {
-        bodyForApiKeyCheck = optionsArgument.body;
-        bodyForPostMessage = optionsArgument.body;
-      } else {
-        bodyForApiKeyCheck = undefined;
-        bodyForPostMessage = input.body;
-      }
-    } else {
-      bodyForApiKeyCheck = undefined;
-      bodyForPostMessage = input.body;
-    }
-    return { actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage };
-  }
-
-  window.fetch = function(input, optionsArgument) {
-    let actualUrl;
-    let fetchCallArgs;
-    let effectiveOptions = {};
-    let bodyForApiKeyCheck;
-    let bodyForPostMessage;
-
-    if (typeof input === 'string') {
-      ({actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage} = handleStringInput(input, optionsArgument));
-    } else if (input instanceof Request) {
-      ({actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage} = handleRequestInput(input, optionsArgument));
-    } else {
-      return originalFetch.apply(window, [input, optionsArgument]);
-    }
-
-    effectiveOptions.method = effectiveOptions.method || 'GET';
-    if (!effectiveOptions.headers) {
-      effectiveOptions.headers = new Headers();
-    }
-
-
-    if (typeof actualUrl === 'string' && googleLlmBaseApiUrls.some((url) => actualUrl.startsWith(url))) {
-      let apiKeyIsNull = true;
-
-      const regex = new RegExp("models/([^:]+)");
-      const modelNameMatch = actualUrl.match(regex);
-      const modelName = modelNameMatch ? modelNameMatch[1] : 'unspecified';
-
-
-      try {
-        const urlObject = new URL(actualUrl);  // Use URL object for robust parsing
-        const apiKeyParam = urlObject.searchParams.get('key');
-        if (apiKeyParam) {
-          apiKeyIsNull = false;
-        }
-      } catch (e) {
-        // Continue checks even if URL parsing fails
-      }
-
-      if (apiKeyIsNull && effectiveOptions.headers) {
-        const h = new Headers(effectiveOptions.headers);
-        const apiKeyHeaderValue = h.get('X-API-Key') || h.get('x-api-key');
-        if (apiKeyHeaderValue) {
-          apiKeyIsNull = false;
-          return originalFetch.apply(window, fetchCallArgs);
-        }
-      }
-
-      if (apiKeyIsNull && effectiveOptions.method && ['POST', 'PUT', 'PATCH'].includes(effectiveOptions.method.toUpperCase()) && typeof bodyForApiKeyCheck === 'string') {
-        try {
-          const bodyData = JSON.parse(bodyForApiKeyCheck);
-          if (bodyData && bodyData.apiKey) {
-            apiKeyIsNull = false;
-            return originalFetch.apply(window, fetchCallArgs);
-          }
-        } catch (e) {
-          // Ignore JSON parsing errors
-        }
-      }
-
-      if(apiKeyIsNull) {
-        const promiseId = nextPromiseId++;
-        const promise = new Promise((resolve) => {
-          pendingFetchResolvers[promiseId] = (resolvedResponse) => {
-            delete pendingFetchResolvers[promiseId];
-            resolve(resolvedResponse);
-          };
-        });
-
-        let serializedBodyForPostMessage;
-        if (typeof bodyForPostMessage === 'string' || bodyForPostMessage == null) {
-            serializedBodyForPostMessage = bodyForPostMessage;
-        } else if (bodyForPostMessage instanceof ReadableStream) {
-            serializedBodyForPostMessage = null;
-        } else {
-            try {
-                serializedBodyForPostMessage = JSON.stringify(bodyForPostMessage);
-            } catch (e) {
-                serializedBodyForPostMessage = null;
-            }
-        }
-
-        const messageOptions = {
-            method: effectiveOptions.method,
-            headers: Object.fromEntries(new Headers(effectiveOptions.headers).entries()),
-            body: serializedBodyForPostMessage
-        };
-
-        window.parent.postMessage({
-          type: 'requestFetch',
-          url: actualUrl,
-          modelName: modelName,
-          options: messageOptions,
-          promiseId: promiseId,
-        }, '*');
-
-        return promise;
-      }
-      return originalFetch.apply(window, fetchCallArgs);
-    }
-    return originalFetch.apply(window, fetchCallArgs);
-  };
-
-  window.addEventListener('message', function(event) {
-    if (event.data && event.data.type === 'resolveFetch') {
-      const { promiseId, response } = event.data;
-      if (pendingFetchResolvers[promiseId]) {
-        try {
-          const reconstructedResponse = new Response(response.body, {
-            status: response.status,
-            statusText: response.statusText,
-            headers: new Headers(response.headers),
-          });
-          pendingFetchResolvers[promiseId](reconstructedResponse);
-        } catch (error) {
-          pendingFetchResolvers[promiseId](new Response(null, { status: 500, statusText: "Interceptor Response Reconstruction Error" }));
-        }
-      }
-    }
-  });
-
-}))({"textModelName":"gemini-3-flash-preview","imageModelName":"imagen-4.0-generate-001","imageEditModelName":"gemini-2.5-flash-image-preview","imageTransformModelName":"gemini-3-pro-image-preview-11-2025","videoModelName":"veo-2.0-generate-001","ttsModelName":"gemini-2.5-flash-preview-tts","deprecatedTextModelNames":["gemini-2.0-flash","gemini-2.5-flash","gemini-2.5-flash-preview-04-17","gemini-2.5-flash-preview-05-20","gemini-2.5-flash-preview-09-2025"],"deprecatedImageModelNames":["imagen-3.0-generate-001","imagen-3.0-generate-002"]})</script><script>(function(){'use strict';function a(){window.parent.postMessage({type:"interaction"},"*")}window.addEventListener("click",a,{capture:!0,passive:!0});window.addEventListener("touchstart",a,{capture:!0,passive:!0});window.addEventListener("keydown",a,{capture:!0,passive:!0});}).call(this);
-</script><script>(function() {
-  const originalConsoleLog = console.log;
-  const originalConsoleError = console.error;
-
-    /**
-   * Normalizes an error event or a promise rejection reason into a structured error object.
-   * @param {*} errorEventOrReason The error object or reason.
-   * @return {object} Structured error data { message, name, stack }.
-   */
-  function getErrorObject(errorEventOrReason) {
-    if (errorEventOrReason instanceof Error) {
-      return {
-        message: errorEventOrReason.message,
-        name: errorEventOrReason.name,
-        stack: errorEventOrReason.stack,
-      };
-    }
-    // Fallback for non-Error objects.
-    try {
-      return {
-        message: JSON.stringify(errorEventOrReason),
-        name: 'UnknownErrorType',
-        stack: null,
-      };
-    } catch (e) {
-      return {
-        message: String(errorEventOrReason),
-        name: 'UnknownErrorTypeNonStringifiable',
-        stack: null,
-      };
-    }
-  }
-
-  /**
-   * Converts an array of arguments (from log/error) into a single string.
-   * Handles Error objects specially to include their message and stack.
-   * @param {Array<*>} args - Arguments passed to console methods.
-   * @return {string} A string representation of the arguments.
-   */
-  function stringifyArgs(args) {
-    return args
-      .map((arg) => {
-        if (arg instanceof Error) {
-          const {message, stack} = arg;
-          return `Error: ${message}${stack ? ('\nStack: ' + stack) : ''}`;
-        }
-        if (typeof arg === 'object' && arg !== null) {
-          try {
-            return JSON.stringify(arg);
-          } catch (error) {
-            return '[Circular Object]';
-          }
-        } else {
-          return String(arg);
-        }
-      })
-      .join(' ');
-  }
-
-  console.log = function(...args) {
-    const logString = stringifyArgs(args);
-    window.parent.postMessage({ type: 'log', message: logString }, '*');
-    originalConsoleLog.apply(console, args);
-  };
-
-  console.error = function(...args) {
-    let errorData;
-    if (args.length > 0 && args[0] instanceof Error) {
-      const err = args[0];
-      // If the first arg is an Error, capture its details.
-      errorData = {
-        type: 'error',
-        source: 'CONSOLE_ERROR',
-        ...getErrorObject(err),
-        rawArgsString: stringifyArgs(args.slice(1)),
-        timestamp: new Date().toISOString(),
-      };
-    } else {
-      // If not an Error object, treat all args as a general error message.
-      errorData = {
-        type: 'error',
-        source: 'CONSOLE_ERROR',
-        message: stringifyArgs(args),
-        name: 'ConsoleLoggedError',
-        stack: null,
-        timestamp: new Date().toISOString(),
-      };
-    }
-    window.parent.postMessage(errorData, '*');
-    originalConsoleError.apply(console, args);
-  };
-
-  // Listen for global unhandled synchronous errors.
-  window.addEventListener('error', function(event) {
-    const errorDetails = event.error ? getErrorObject(event.error) : {
-      message: event.message,
-      name: 'GlobalError',
-      stack: null,
-      filename: event.filename,
-      lineno: event.lineno,
-      colno: event.colno,
-    };
-
-    window.parent.postMessage({
-      type: 'error',
-      source: 'global',
-      ...errorDetails,
-      message: errorDetails.message || event.message,
-      timestamp: new Date().toISOString(),
-    }, '*');
-  });
-
-  // Listen for unhandled promise rejections (asynchronous errors).
-  window.addEventListener('unhandledrejection', function(event) {
-    const errorDetails = getErrorObject(event.reason);
-
-    window.parent.postMessage({
-      type: 'error',
-      source: 'unhandledrejection',
-      ...errorDetails,
-      message: errorDetails.message || 'Unhandled Promise Rejection',
-      timestamp: new Date().toISOString(),
-    }, '*');
-  });
-
-})();</script>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Exceptions Report — Jeffrey Bilbrey Region</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&amp;family=Syne:wght@700;800&amp;display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
 <!-- SheetJS for Excel Parsing -->
 <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+
+<script>
+  // --- Global State ---
+  window.RAW_DATA = [];
+  window.CANCEL_DATA = [];
+  window.activeStats = { reps: [], stores: [], issues: [], cancels: [] };
+  window.RSD_NAME_FILTER = "Jeffrey Bilbrey";
+</script>
+
+<!-- Firebase Module -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+  import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+  import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+  let db, auth, appId;
+  
+  // Try to init Firebase only if config exists
+  if (typeof __firebase_config !== 'undefined') {
+    try {
+      const config = JSON.parse(__firebase_config);
+      const app = initializeApp(config);
+      auth = getAuth(app);
+      db = getFirestore(app);
+      appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+      const token = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+      if (token) { await signInWithCustomToken(auth, token); } 
+      else { await signInAnonymously(auth); }
+
+      onAuthStateChanged(auth, (u) => {
+        if (u) {
+          const reportDoc = doc(db, 'artifacts', appId, 'public', 'data', 'reports', 'bilbrey_region');
+          onSnapshot(reportDoc, (snapshot) => {
+            if (snapshot.exists()) {
+              const data = snapshot.data();
+              window.RAW_DATA = data.raw || [];
+              window.CANCEL_DATA = data.cancel || [];
+              updateAndRender();
+            }
+          });
+        }
+      });
+
+      window.pushDataToCloud = async (raw, cancel) => {
+        const reportDoc = doc(db, 'artifacts', appId, 'public', 'data', 'reports', 'bilbrey_region');
+        await setDoc(reportDoc, {
+          raw: raw,
+          cancel: cancel,
+          lastUpdated: new Date().toISOString()
+        });
+      };
+    } catch (e) { console.warn("Firebase Init Skipped (Local Mode)"); }
+  }
+
+  function updateAndRender() {
+    if (typeof window.processStats === 'function') { window.activeStats = window.processStats(); }
+    if (typeof window.render === 'function') { window.render(); }
+  }
+</script>
+
 <style>
   *{box-sizing:border-box;margin:0;padding:0;}
   body{font-family:'DM Mono','Courier New',monospace;background:#0f0f13;min-height:100vh;color:#e2e8f0;}
@@ -572,9 +83,8 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
   .btn-group{display:flex;gap:8px;align-items:center;}
   .tab-btn{cursor:pointer;padding:8px 20px;border-radius:8px;font-family:inherit;font-size:13px;transition:all 0.2s;border:1px solid #1e2030;background:#16161f;color:#64748b;}
   .tab-btn.active{background:#6366f1;color:white;border-color:#6366f1;}
-  .tab-btn:hover:not(.active){color:#94a3b8;border-color:#334155;}
   
-  .settings-btn { background: transparent; border: 1px solid #1e2030; color: #475569; padding: 8px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+  .settings-btn { background: transparent; border: 1px solid #1e2030; color: #475569; padding: 8px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
   .settings-btn:hover { border-color: #6366f1; color: #6366f1; }
 
   .layout{display:flex;height:calc(100vh - 73px);}
@@ -586,187 +96,91 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
   .stat-num{font-size:22px;font-weight:500;}
   .stat-label{font-size:10px;color:#475569;text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
   
-  .mini-chart{background:#16161f;border:1px solid #1e2030;border-radius:12px;padding:12px 14px;margin-bottom:14px;}
-  .mini-chart-title{font-size:10px;color:#475569;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;}
-  .bar-row{margin-bottom:8px;}
-  .bar-row-labels{display:flex;justify-content:space-between;font-size:10px;margin-bottom:3px;}
-  .bar-track{height:6px;border-radius:3px;background:#1e2030;overflow:hidden;}
-  .bar-fill{height:100%;border-radius:3px;transition:width 0.4s ease;}
-  
-  .search-wrap{position:relative;margin-bottom:12px;}
-  .search-input{width:100%;background:#16161f;border:1px solid #1e2030;border-radius:8px;padding:8px 12px 8px 32px;font-family:inherit;font-size:12px;color:#cbd5e1;outline:none;transition:border-color 0.2s;}
-  .search-input::placeholder{color:#334155;}
-  .search-input:focus{border-color:#6366f1;}
-  .search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#475569;font-size:13px;pointer-events:none;}
-  
-  .list-label{font-size:10px;color:#475569;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px;}
+  .search-input{width:100%;background:#16161f;border:1px solid #1e2030;border-radius:8px;padding:8px 12px;font-family:inherit;font-size:12px;color:#cbd5e1;outline:none;margin-bottom:12px;}
   .list-item{cursor:pointer;padding:10px 14px;border-radius:8px;border:1px solid #1e2030;transition:all 0.15s;margin-bottom:6px;background:#16161f;}
-  .list-item:hover{border-color:#334155;background:#1a1a24;}
   .list-item.active{border-color:#6366f1;background:#1e1e30;}
-  .list-item-name{font-size:12px;font-weight:500;color:#cbd5e1;}
-  .list-item.active .list-item-name{color:#a5b4fc;}
+  .list-item-name{font-size:12px;font-weight:500;}
   .list-item-sub{font-size:10px;color:#475569;margin-top:2px;}
   
-  .detail-header{margin-bottom:24px;}
-  .detail-title{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:#fff;}
-  .detail-sub{font-size:12px;color:#475569;margin-top:4px;}
-  
-  .badge-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;}
-  .issue-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:500;border:1px solid;}
-  
-  .issue-card{border-radius:10px;border:1px solid;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:filter 0.15s;}
-  .issue-card:hover{filter:brightness(1.05);}
+  .detail-title{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:#fff;margin-bottom:20px;}
+  .issue-card{border-radius:10px;border:1px solid #1e2030;padding:14px 16px;margin-bottom:10px;cursor:pointer;background:#16161f;}
   .issue-card-header{display:flex;align-items:center;justify-content:space-between;}
-  .issue-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px;flex-shrink:0;}
-  .issue-name{font-size:13px;font-weight:500;}
-  .issue-meta{font-size:11px;color:#64748b;margin-top:1px;}
-  .issue-toggle{color:#94a3b8;font-size:16px;}
   
-  .issue-body{margin-top:14px;padding-top:14px;}
-  .issue-desc{border-radius:8px;padding:10px 14px;font-size:12px;line-height:1.6;color:#475569;margin-bottom:14px;background:rgba(0,0,0,0.08);}
-  
-  .section-label{font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px; display: flex; align-items: center; justify-content: space-between;}
-  
-  .acct-table{width:100%;border-collapse:collapse;font-size:11px;margin-top:4px;}
-  .acct-table th{text-align:left;color:#64748b;font-weight:400;padding:4px 8px;border-bottom:1px solid #1e2030;text-transform:uppercase;letter-spacing:1px;font-size:10px;}
-  .acct-table td{padding:5px 8px;border-bottom:1px solid rgba(30,32,48,0.5);color:#cbd5e1;vertical-align:top;}
-  .acct-table tr:last-child td{border-bottom:none;}
-  .acct-table tr:hover td{background:rgba(255,255,255,0.02);}
+  .acct-table{width:100%;border-collapse:collapse;font-size:11px;margin-top:12px;}
+  .acct-table th{text-align:left;color:#64748b;padding:4px 8px;border-bottom:1px solid #1e2030;}
+  .acct-table td{padding:8px;border-bottom:1px solid rgba(30,32,48,0.5);color:#cbd5e1;}
+  .lob-pill{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;margin:2px;background:#1e2030;color:#94a3b8;border:1px solid #2d3148;}
 
-  .lob-pill{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:500;margin:2px;letter-spacing:0.5px;background:#1e2030;color:#94a3b8;border:1px solid #2d3148;}
-  .lob-hsi{background:#1e3a5f;color:#60a5fa;border-color:#1d4ed8;}
-  .lob-video{background:#3b1f5e;color:#c084fc;border-color:#7c3aed;}
-  .lob-xfm{background:#3b1a1a;color:#f87171;border-color:#dc2626;}
-  .lob-xhs{background:#1a3320;color:#4ade80;border-color:#16a34a;}
-  .lob-cdv{background:#1a2e3b;color:#38bdf8;border-color:#0284c7;}
-  .lob-other{background:#1e2030;color:#94a3b8;border-color:#334155;}
-  
-  .empty-state { text-align: center; padding: 100px 20px; }
-  .empty-title{font-family:'Syne',sans-serif;font-size:40px;font-weight:800;color:#1e2030;margin-bottom:12px;}
-  .empty-sub{font-size:13px;letter-spacing:1px; color: #475569;}
-
-  /* Modals */
-  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
   .modal-overlay.active { display: flex; }
-  .modal { background: #16161f; border: 1px solid #1e2030; border-radius: 16px; width: 100%; max-width: 400px; padding: 32px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5); }
-  .modal-title { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; margin-bottom: 8px; text-transform: uppercase; }
-  .modal-sub { font-size: 12px; color: #64748b; margin-bottom: 24px; }
-  .input-field { width: 100%; background: #0f0f13; border: 1px solid #1e2030; border-radius: 8px; padding: 12px; color: white; font-family: inherit; margin-bottom: 16px; outline: none; transition: border-color 0.2s; }
-  .input-field:focus { border-color: #6366f1; }
-  .primary-btn { width: 100%; background: #6366f1; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: background 0.2s; margin-bottom: 8px; }
-  .primary-btn:hover { background: #4f46e5; }
-  .primary-btn:disabled { background: #334155; cursor: not-allowed; }
-  .secondary-btn { width: 100%; background: transparent; color: #6366f1; border: 1px solid #6366f1; padding: 12px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s; margin-bottom: 8px; }
-  .secondary-btn:hover { background: rgba(99, 102, 241, 0.1); }
-  .close-modal { width: 100%; background: transparent; color: #475569; border: none; padding: 8px; cursor: pointer; font-size: 12px; }
-
-  .unlock-btn { font-size: 9px; padding: 2px 6px; border-radius: 4px; border: 1px solid #334155; background: #1e2030; color: #94a3b8; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; }
-  .unlock-btn:hover { color: #6366f1; border-color: #6366f1; }
+  .modal { background: #16161f; border: 1px solid #1e2030; border-radius: 16px; width: 100%; max-width: 400px; padding: 32px; }
+  .input-field { width: 100%; background: #0f0f13; border: 1px solid #1e2030; border-radius: 8px; padding: 12px; color: white; margin-bottom: 16px; outline: none; }
+  .primary-btn { width: 100%; background: #6366f1; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 600; cursor: pointer; margin-bottom: 8px; }
+  .unlock-btn { font-size: 9px; padding: 2px 6px; border-radius: 4px; border: 1px solid #334155; background: #1e2030; color: #94a3b8; cursor: pointer; }
 </style>
 </head>
 <body>
 
-<!-- Password Modal -->
 <div id="password-overlay" class="modal-overlay">
   <div class="modal">
-    <div class="modal-title" id="pwd-title">SECURE ACCESS</div>
-    <div class="modal-sub" id="pwd-sub">Please verify your identity.</div>
-    <input type="password" id="pwd-input" class="input-field" placeholder="Password" onkeydown="if(event.key==='Enter') verifyPassword()">
+    <h2 style="margin-bottom:8px">SECURE ACCESS</h2>
+    <p style="font-size:12px;color:#64748b;margin-bottom:24px">Identity verification required.</p>
+    <input type="password" id="pwd-input" class="input-field" placeholder="Password">
     <button class="primary-btn" onclick="verifyPassword()">UNLOCK</button>
-    <button class="close-modal" onclick="closeModals()">CANCEL</button>
+    <button style="width:100%;background:transparent;border:none;color:#475569;cursor:pointer" onclick="closeModals()">CANCEL</button>
   </div>
 </div>
 
-<!-- Upload / Settings Modal -->
-<div id="upload-overlay" class="modal-overlay active">
+<div id="upload-overlay" class="modal-overlay">
   <div class="modal">
-    <div class="modal-title">SETTINGS</div>
-    <div class="modal-sub">Update data or export the tool for offline use.</div>
-    
-    <label style="font-size: 10px; color: #475569; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 8px;">Upload New Report</label>
-    <input type="file" id="excel-upload" class="input-field" accept=".xlsx, .xls" style="padding: 8px;">
-    <button class="primary-btn" id="process-btn" onclick="processUpload()">PROCESS &amp; FILTER</button>
-    
-    <div style="height: 1px; background: #1e2030; margin: 20px 0;"></div>
-    
-    <label style="font-size: 10px; color: #475569; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 8px;">Export Dashboard</label>
-    <button class="secondary-btn" onclick="downloadDashboard()">DOWNLOAD STANDALONE HTML</button>
-    
-    <button class="close-modal" onclick="closeModals()">CLOSE</button>
+    <h2 style="margin-bottom:8px">UPDATE REPORT</h2>
+    <p style="font-size:12px;color:#64748b;margin-bottom:24px">Upload Excel to refresh regional data.</p>
+    <input type="file" id="excel-upload" class="input-field" accept=".xlsx, .xls">
+    <button class="primary-btn" id="process-btn" onclick="processUpload()">PROCESS & SYNC</button>
+    <button style="width:100%;background:transparent;border:none;color:#475569;cursor:pointer" onclick="closeModals()">CLOSE</button>
   </div>
 </div>
 
 <div class="header">
   <div>
     <div class="header-title">EXCEPTIONS REPORT</div>
-    <div class="header-sub">Commission Loss Analysis · Jeffrey Bilbrey Region</div>
+    <div class="header-sub">Jeffrey Bilbrey Region</div>
   </div>
   <div class="btn-group">
-    <button class="tab-btn active" id="btn-rep" onclick="switchView('rep')">By Rep</button>
-    <button class="tab-btn" id="btn-store" onclick="switchView('store')">By Store</button>
-    <button class="tab-btn" id="btn-exception" onclick="switchView('exception')">By Exception</button>
-    <button class="tab-btn" id="btn-cancel" onclick="switchView('cancel')">Cancellations</button>
-    <button class="settings-btn" onclick="requestAccess('settings')" title="Settings &amp; Upload">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+    <button class="tab-btn active" id="btn-rep" onclick="switchView('rep')">Rep</button>
+    <button class="tab-btn" id="btn-store" onclick="switchView('store')">Store</button>
+    <button class="tab-btn" id="btn-exception" onclick="switchView('exception')">Issue</button>
+    <button class="tab-btn" id="btn-cancel" onclick="switchView('cancel')">Cancels</button>
+    <button class="settings-btn" onclick="requestAccess('settings')">
+       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
     </button>
   </div>
 </div>
 
 <div class="layout">
-  <div class="sidebar" id="sidebar">
+  <div class="sidebar">
     <div class="stat-grid">
       <div class="stat-card">
         <div class="stat-num" style="color:#f97316;" id="total-count">0</div>
-        <div class="stat-label">Total Items</div>
+        <div class="stat-label">Exceptions</div>
       </div>
       <div class="stat-card">
         <div class="stat-num" style="color:#6366f1;" id="rep-count">0</div>
-        <div class="stat-label" id="count-label">Reps Affected</div>
+        <div class="stat-label">Groups</div>
       </div>
     </div>
-    <div class="mini-chart">
-      <div class="mini-chart-title">Breakdown</div>
-      <div id="top-issues-chart"></div>
-    </div>
-    <div class="list-label" id="list-label">Items</div>
-    <div class="search-wrap">
-      <span class="search-icon">🔍</span>
-      <input class="search-input" id="search-input" type="text" placeholder="Search..." oninput="onSearch()">
-    </div>
+    <input class="search-input" id="search-input" type="text" placeholder="Search..." oninput="onSearch()"/>
     <div id="list-container"></div>
   </div>
-
-  <div class="main" id="main-content"><div class="empty-state"><div class="empty-title">SELECT A CATEGORY</div><div class="empty-sub">Choose from the list to view data</div></div></div>
+  <div class="main" id="main-content">
+    <div class="empty-state" style="text-align: center; padding-top: 100px;">
+      <div class="empty-title" style="font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 800; color: #1e2030; margin-bottom: 16px;">NO DATA LOADED</div>
+      <p style="color: #475569; font-size: 14px; max-width: 400px; margin: 0 auto;">Click the <strong>Sync Icon</strong> in the top right to upload your Excel file and initialize the dashboard.</p>
+    </div>
+  </div>
 </div>
 
 <script>
-// ── Core Config ──────────────────────────────────────────────────────────────
-const RSD_NAME_FILTER = "Jeffrey Bilbrey";
-const ISSUE_INFO = {
-  "Cancel Rekey": { color:"#ef4444", bg:"#fef2f2", border:"#fecaca", description:"Customer already had service at this address. Cancelling and restarting service is not commissionable." },
-  "Fails 3-Day Rule": { color:"#f97316", bg:"#fff7ed", border:"#fed7aa", description:"Active service existed at address within 3 days. Restarting under different family names is ineligible." },
-  "Insufficient Revenue Lift": { color:"#eab308", bg:"#fefce8", border:"#fef08a", description:"Bill must increase by more than $1.00 for the sale to be commissionable." },
-  "More than 60 days to install": { color:"#8b5cf6", bg:"#faf5ff", border:"#ddd6fe", description:"Install not completed within 60 days of order." },
-  "No Camera Sold With Order": { color:"#06b6d4", bg:"#ecfeff", border:"#a5f3fc", description:"Smart home security systems must include a camera for payment." },
-  "XFM - Same Day Disconnect": { color:"#ec4899", bg:"#fdf2f8", border:"#fbcfe8", description:"Mobile line cancelled on the same day it was established." },
-  "Risk Assurance": { color:"#64748b", bg:"#f8fafc", border:"#cbd5e1", description:"Failed internal risk assessment. Suggest using XOE to ensure prepayments are collected." },
-  "Customer had service within 120 Days": { color:"#10b981", bg:"#ecfdf5", border:"#a7f3d0", description:"Customer had recent service history within 120 days." },
-  "Customer had FLEX service within 120 Days": { color:"#10b981", bg:"#ecfdf5", border:"#a7f3d0", description:"FLEX service history within 120 days makes order ineligible." },
-  "Customer disconnected more than twice": { color:"#f43f5e", bg:"#fff1f2", border:"#fecdd3", description:"Pattern of repeated disconnections is not commissionable." },
-};
-const CANCEL_REASON_INFO = {
-  "CUST REFUSED": { color:"#ef4444", bg:"#fef2f2", border:"#fecaca", desc:"Customer refused installation at the door." },
-  "OLD PENDG CNCL": { color:"#64748b", bg:"#f8fafc", border:"#cbd5e1", desc:"Old pending order cancelled by system." },
-  "CANCEL @CHECKIN": { color:"#f97316", bg:"#fff7ed", border:"#fed7aa", desc:"Cancelled during technician check-in." },
-  "OFFICE CORRECTN": { color:"#8b5cf6", bg:"#faf5ff", border:"#ddd6fe", desc:"Cancelled due to data entry correction." },
-  "CUSTOMER CHOICE": { color:"#06b6d4", bg:"#ecfeff", border:"#a5f3fc", desc:"Customer voluntarily cancelled." },
-  "COMPETITION": { color:"#eab308", bg:"#fefce8", border:"#fef08a", desc:"Customer chose a different provider." },
-  "Unknown": { color:"#94a3b8", bg:"#f1f5f9", border:"#e2e8f0", desc:"No reason recorded." },
-};
-
-// ── State ────────────────────────────────────────────────────────────────────
-let RAW_DATA = JSON.parse(localStorage.getItem('ex_raw_jb') || '[]');
-let CANCEL_DATA = JSON.parse(localStorage.getItem('ex_can_jb') || '[]');
 let currentView = "rep";
 let selectedKey = null;
 let expandedIssue = null;
@@ -774,261 +188,141 @@ let searchQuery = "";
 let isUnlocked = false;
 let pendingTask = null;
 
-// ── Data Processing ──────────────────────────────────────────────────────────
-function getIssueKey(row) { return row.type === "Risk Assurance" ? "Risk Assurance" : (row.subType || row.type); }
+window.getIssueKey = function(row) { return row.type === "Risk Assurance" ? "Risk Assurance" : (row.subType || row.type); }
 
-function processStats() {
+window.processStats = function() {
   const stats = { reps: [], stores: [], issues: [], cancels: [] };
-  const repMap = {}, storeMap = {}, issueMap = {}, cancelMap = {};
+  const rM = {}, sM = {}, iM = {}, cM = {};
 
-  RAW_DATA.forEach(row => {
+  window.RAW_DATA.forEach(row => {
     if (row.rep) {
-      if (!repMap[row.rep]) repMap[row.rep] = { key: row.rep, label: row.rep, issues: {}, allRows: [] };
-      repMap[row.rep].allRows.push(row);
-      const k = getIssueKey(row);
-      if (!repMap[row.rep].issues[k]) repMap[row.rep].issues[k] = { count: 0, customerIds: new Set(), lobMap: {} };
-      repMap[row.rep].issues[k].count++;
-      repMap[row.rep].issues[k].customerIds.add(row.customerId);
+      if (!rM[row.rep]) rM[row.rep] = { key: row.rep, label: row.rep, issues: {}, allRows: [] };
+      rM[row.rep].allRows.push(row);
+      const k = window.getIssueKey(row);
+      if (!rM[row.rep].issues[k]) rM[row.rep].issues[k] = { count: 0, customerIds: new Set(), lobMap: {} };
+      rM[row.rep].issues[k].count++;
+      rM[row.rep].issues[k].customerIds.add(row.customerId);
       if (row.lob) {
-        if (!repMap[row.rep].issues[k].lobMap[row.customerId]) repMap[row.rep].issues[k].lobMap[row.customerId] = new Set();
-        repMap[row.rep].issues[k].lobMap[row.customerId].add(row.lob);
+        if (!rM[row.rep].issues[k].lobMap[row.customerId]) rM[row.rep].issues[k].lobMap[row.customerId] = new Set();
+        rM[row.rep].issues[k].lobMap[row.customerId].add(row.lob);
       }
     }
-    if (!storeMap[row.store]) storeMap[row.store] = { key: row.store, label: row.store, reps: new Set(), issues: {}, allRows: [] };
-    storeMap[row.store].allRows.push(row);
-    if (row.rep) storeMap[row.store].reps.add(row.rep);
-    const ik = getIssueKey(row);
-    if (!storeMap[row.store].issues[ik]) storeMap[row.store].issues[ik] = { count: 0 };
-    storeMap[row.store].issues[ik].count++;
+    if (!sM[row.store]) sM[row.store] = { key: row.store, label: row.store, reps: new Set(), issues: {}, allRows: [] };
+    sM[row.store].allRows.push(row);
+    const ik = window.getIssueKey(row);
+    if (!sM[row.store].issues[ik]) sM[row.store].issues[ik] = { count: 0 };
+    sM[row.store].issues[ik].count++;
 
-    const gk = getIssueKey(row);
-    if (!issueMap[gk]) issueMap[gk] = { key: gk, label: gk, reps: new Set(), issues: {}, allRows: [] };
-    issueMap[gk].allRows.push(row);
-    if (row.rep) {
-        issueMap[gk].reps.add(row.rep);
-        if (!issueMap[gk].issues[row.rep]) issueMap[gk].issues[row.rep] = { count:0, customerIds: new Set(), lobMap: {}, store: row.store };
-        issueMap[gk].issues[row.rep].count++;
-        issueMap[gk].issues[row.rep].customerIds.add(row.customerId);
-    }
+    const gk = window.getIssueKey(row);
+    if (!iM[gk]) iM[gk] = { key: gk, label: gk, reps: new Set(), issues: {}, allRows: [] };
+    iM[gk].allRows.push(row);
   });
 
-  CANCEL_DATA.forEach(row => {
-    if (!cancelMap[row.store]) cancelMap[row.store] = { key: row.store, label: row.store, reasons: {}, allRows: [] };
-    cancelMap[row.store].allRows.push(row);
+  window.CANCEL_DATA.forEach(row => {
+    if (!cM[row.store]) cM[row.store] = { key: row.store, label: row.store, reasons: {}, allRows: [] };
+    cM[row.store].allRows.push(row);
     const r = row.reason || 'Unknown';
-    if (!cancelMap[row.store].reasons[r]) cancelMap[row.store].reasons[r] = { count: 0, rows: [] };
-    cancelMap[row.store].reasons[r].count++;
-    cancelMap[row.store].reasons[r].rows.push(row);
+    if (!cM[row.store].reasons[r]) cM[row.store].reasons[r] = { count: 0, rows: [] };
+    cM[row.store].reasons[r].count++;
+    cM[row.store].reasons[r].rows.push(row);
   });
 
-  stats.reps = Object.values(repMap).sort((a,b)=>b.allRows.length - a.allRows.length);
-  stats.stores = Object.values(storeMap).sort((a,b)=>b.allRows.length - a.allRows.length);
-  stats.issues = Object.values(issueMap).sort((a,b)=>b.allRows.length - a.allRows.length);
-  stats.cancels = Object.values(cancelMap).sort((a,b)=>b.allRows.length - a.allRows.length);
+  stats.reps = Object.values(rM).sort((a,b)=>b.allRows.length-a.allRows.length);
+  stats.stores = Object.values(sM).sort((a,b)=>b.allRows.length-a.allRows.length);
+  stats.issues = Object.values(iM).sort((a,b)=>b.allRows.length-a.allRows.length);
+  stats.cancels = Object.values(cM).sort((a,b)=>b.allRows.length-a.allRows.length);
   return stats;
 }
 
-let activeStats = processStats();
-
-// ── Rendering ────────────────────────────────────────────────────────────────
-function renderSidebar() {
+window.renderSidebar = function() {
   const isCan = currentView === "cancel";
-  const list = currentView === "rep" ? activeStats.reps : currentView === "store" ? activeStats.stores : currentView === "exception" ? activeStats.issues : activeStats.cancels;
-  
-  document.getElementById("total-count").textContent = isCan ? CANCEL_DATA.length : RAW_DATA.length;
+  const list = currentView === "rep" ? window.activeStats.reps : currentView === "store" ? window.activeStats.stores : currentView === "exception" ? window.activeStats.issues : window.activeStats.cancels;
+  document.getElementById("total-count").textContent = isCan ? window.CANCEL_DATA.length : window.RAW_DATA.length;
   document.getElementById("rep-count").textContent = list.length;
-  document.getElementById("count-label").textContent = currentView === "rep" ? "Reps Affected" : currentView === "exception" ? "Issue Types" : "Stores";
-
-  let chartHTML = "";
-  if (isCan) {
-    const counts = {}; CANCEL_DATA.forEach(c => counts[c.reason]=(counts[c.reason]||0)+1);
-    const top = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,5);
-    const max = top[0]?.[1] || 1;
-    chartHTML = top.map(([k,v]) => `<div class="bar-row"><div class="bar-row-labels"><span>${k}</span><span>${v}</span></div><div class="bar-track"><div class="bar-fill" style="width:${(v/max)*100}%;background:${CANCEL_REASON_INFO[k]?.color||'#64748b'}"></div></div></div>`).join("");
-  } else {
-    const top = activeStats.issues.slice(0,5);
-    const max = top[0]?.allRows.length || 1;
-    chartHTML = top.map(i => `<div class="bar-row"><div class="bar-row-labels"><span>${i.label}</span><span>${i.allRows.length}</span></div><div class="bar-track"><div class="bar-fill" style="width:${(i.allRows.length/max)*100}%;background:${ISSUE_INFO[i.key]?.color||'#64748b'}"></div></div></div>`).join("");
-  }
-  document.getElementById("top-issues-chart").innerHTML = chartHTML;
-
-  const q = searchQuery.toLowerCase();
-  const filtered = list.filter(s => s.label.toLowerCase().includes(q));
+  const filtered = list.filter(s => s.label.toLowerCase().includes(searchQuery.toLowerCase()));
   document.getElementById("list-container").innerHTML = filtered.map(s => `
     <div class="list-item ${s.key === selectedKey ? 'active' : ''}" onclick="selectItem('${s.key.replace(/'/g,"\\'")}')">
       <div class="list-item-name">${s.label}</div>
       <div class="list-item-sub">${s.allRows.length} items</div>
-    </div>
-  `).join("");
+    </div>`).join("");
 }
 
-function renderMain() {
+window.renderMain = function() {
   const main = document.getElementById("main-content");
-  const list = currentView === "rep" ? activeStats.reps : currentView === "store" ? activeStats.stores : currentView === "exception" ? activeStats.issues : activeStats.cancels;
+  const list = currentView === "rep" ? window.activeStats.reps : currentView === "store" ? window.activeStats.stores : currentView === "exception" ? window.activeStats.issues : window.activeStats.cancels;
   const sel = list.find(s => s.key === selectedKey);
-
-  if (!sel) {
-    main.innerHTML = `<div class="empty-state"><div class="empty-title">SELECT A CATEGORY</div><div class="empty-sub">Choose from the list to view data</div></div>`;
-    return;
-  }
-
-  const unlockHeader = `<button class="unlock-btn" onclick="requestAccess('unlock')">${isUnlocked ? '🔒 Locked' : '🔓 Unlock IDs'}</button>`;
+  if (!sel) return;
   const mask = (id) => isUnlocked ? id : `••••${String(id).slice(-4)}`;
-
-  let content = `<div class="detail-header"><div class="detail-title">${sel.label}</div><div class="detail-sub">${sel.allRows.length} entries</div></div>`;
-
+  const uH = `<button class="unlock-btn" onclick="requestAccess('unlock')">${isUnlocked ? '🔒' : '🔓'}</button>`;
+  
+  let cards = "";
   if (currentView === "cancel") {
-    const reasons = Object.entries(sel.reasons).sort((a,b)=>b[1].count-a[1].count);
-    content += reasons.map(([r, d]) => `
-      <div class="issue-card" style="border-color:${CANCEL_REASON_INFO[r]?.border};background:${CANCEL_REASON_INFO[r]?.bg}" onclick="toggleIssue('${r.replace(/'/g,"\\'")}')">
-        <div class="issue-card-header"><div class="issue-name" style="color:${CANCEL_REASON_INFO[r]?.color}">${r} (${d.count})</div><div class="issue-toggle">${expandedIssue===r?'▲':'▼'}</div></div>
-        ${expandedIssue===r ? `<div class="issue-body"><table class="acct-table"><thead><tr><th>Rep</th><th>Account Number ${unlockHeader}</th><th>Date</th></tr></thead><tbody>${d.rows.map(row=>`<tr><td>${row.rep||'—'}</td><td>${mask(row.customerId)}</td><td>${row.cancelDate}</td></tr>`).join("")}</tbody></table></div>`:''}
+    cards = Object.entries(sel.reasons).map(([r, d]) => `
+      <div class="issue-card" onclick="toggleIssue('${r.replace(/'/g,"\\'")}')">
+        <div class="issue-card-header"><div class="issue-name">${r} (${d.count})</div><div>${expandedIssue===r?'▲':'▼'}</div></div>
+        ${expandedIssue===r ? `<table class="acct-table"><thead><tr><th>Rep</th><th>Account ${uH}</th><th>Date</th></tr></thead><tbody>${d.rows.map(row=>`<tr><td>${row.rep||'—'}</td><td>${mask(row.customerId)}</td><td>${row.cancelDate}</td></tr>`).join("")}</tbody></table>`:''}
       </div>`).join("");
   } else {
-    const issues = Object.entries(sel.issues);
-    content += issues.map(([k, d]) => `
-      <div class="issue-card" style="border-color:${ISSUE_INFO[k]?.border || '#1e2030'};background:${ISSUE_INFO[k]?.bg || '#16161f'}" onclick="toggleIssue('${k.replace(/'/g,"\\'")}')">
-        <div class="issue-card-header"><div class="issue-name" style="color:${ISSUE_INFO[k]?.color || '#cbd5e1'}">${k} (${d.count})</div><div class="issue-toggle">${expandedIssue===k?'▲':'▼'}</div></div>
-        ${expandedIssue===k ? `<div class="issue-body"><table class="acct-table"><thead><tr><th>Identity</th><th>Account Number ${unlockHeader}</th><th>LOB</th></tr></thead>
+    cards = Object.entries(sel.issues || {}).map(([k, d]) => `
+      <div class="issue-card" onclick="toggleIssue('${k.replace(/'/g,"\\'")}')">
+        <div class="issue-card-header"><div class="issue-name">${k} (${d.count})</div><div>${expandedIssue===k?'▲':'▼'}</div></div>
+        ${expandedIssue===k ? `<table class="acct-table"><thead><tr><th>Identity</th><th>Account ${uH}</th><th>LOB</th></tr></thead>
           <tbody>${[...d.customerIds].map(cid => {
             const row = sel.allRows.find(r => r.customerId === cid);
             const lobs = [...(d.lobMap?.[cid] || [])].map(l => `<span class="lob-pill">${l}</span>`).join("");
             return `<tr><td>${row.rep || row.store}</td><td>${mask(cid)}</td><td>${lobs}</td></tr>`;
-          }).join("")}</tbody></table></div>`:''}
+          }).join("")}</tbody></table>`:''}
       </div>`).join("");
   }
-  main.innerHTML = content;
+  main.innerHTML = `<div class="detail-header"><div class="detail-title">${sel.label}</div></div>${cards}`;
 }
 
-// ── App Handlers ─────────────────────────────────────────────────────────────
-function requestAccess(task) {
-  pendingTask = task;
-  const overlay = document.getElementById('password-overlay');
-  document.getElementById('pwd-input').value = '';
-  overlay.classList.add('active');
-  document.getElementById('pwd-input').focus();
+window.render = function() { window.renderSidebar(); window.renderMain(); }
+window.requestAccess = function(t) { pendingTask = t; document.getElementById('password-overlay').classList.add('active'); document.getElementById('pwd-input').value = ''; }
+window.verifyPassword = function() {
+  const p = document.getElementById('pwd-input').value;
+  if (pendingTask === 'settings' && p === 'Password123!') { closeModals(); document.getElementById('upload-overlay').classList.add('active'); }
+  else if (pendingTask === 'unlock' && p === 'Xf!nity250') { isUnlocked = !isUnlocked; closeModals(); window.renderMain(); }
+  else { alert('Access Denied'); }
 }
+window.closeModals = function() { document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active')); }
 
-function verifyPassword() {
-  const pwd = document.getElementById('pwd-input').value;
-  if (pendingTask === 'settings' && pwd === 'Password123!') {
-    closeModals();
-    document.getElementById('upload-overlay').classList.add('active');
-  } else if (pendingTask === 'unlock' && pwd === 'Xf!nity250') {
-    isUnlocked = !isUnlocked;
-    closeModals();
-    renderMain();
-  } else {
-    alert('Incorrect Password');
-  }
-}
-
-function closeModals() { document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active')); }
-
-function processUpload() {
-  const fileInput = document.getElementById('excel-upload');
-  const btn = document.getElementById('process-btn');
-  const file = fileInput.files[0];
-  if (!file) { alert("Please select a file."); return; }
-
-  btn.disabled = true;
-  btn.textContent = "PROCESSING...";
-
-  const reader = new FileReader();
-  reader.onload = function(e) {
+window.processUpload = async function() {
+  const f = document.getElementById('excel-upload').files[0]; if (!f) return;
+  const b = document.getElementById('process-btn'); b.disabled = true; b.textContent = "PROCESSING...";
+  const r = new FileReader();
+  r.onload = async function(e) {
     try {
-      const data = new Uint8Array(e.target.result);
-      const workbook = XLSX.read(data, {type: 'array'});
-      let newRaw = [], newCancel = [];
-      let totalChecked = 0;
-
-      workbook.SheetNames.forEach(name => {
-        const json = XLSX.utils.sheet_to_json(workbook.Sheets[name]);
+      const d = new Uint8Array(e.target.result);
+      const wb = XLSX.read(d, {type: 'array'});
+      let raw = [], can = [];
+      wb.SheetNames.forEach(n => {
+        const json = XLSX.utils.sheet_to_json(wb.Sheets[n]);
         if (!json.length) return;
-        totalChecked += json.length;
-
-        // DETECTION LOGIC: Matches "RD" column first, then "RSD"
-        const headerKeys = Object.keys(json[0]);
-        const rsdKey = headerKeys.find(k => k.toLowerCase() === 'rd') || headerKeys.find(k => /rsd|director|rvp/i.test(k));
-
-        const filtered = json.filter(r => {
-          if (!rsdKey) return false;
-          const val = String(r[rsdKey] || "").toLowerCase();
-          return val.includes(RSD_NAME_FILTER.toLowerCase());
-        });
-
-        const sheetKeys = headerKeys.map(k => k.toLowerCase());
-        if (sheetKeys.includes('reason') || sheetKeys.includes('cancel reason')) {
-          newCancel = [...newCancel, ...filtered.map(r => ({
-            store: r.Store || r.store || r['Store Name'] || "",
-            rep: r['Rep Name'] || r.Rep || r.rep || r.Salesperson || "",
-            customerId: String(r['Customer ID'] || r.customerId || r.Account || ""),
-            cancelDate: r['Date Of Cancelation'] || r['Cancel Date'] || r.cancelDate || "",
-            reason: r['Cancel Reason'] || r.Reason || r.reason || "Unknown"
-          }))];
+        const rk = Object.keys(json[0]).find(k => k.toLowerCase()==='rd' || /rsd|director/i.test(k));
+        const filtered = json.filter(r => String(r[rk]||"").toLowerCase().includes(window.RSD_NAME_FILTER.toLowerCase()));
+        if (Object.keys(json[0]).map(k=>k.toLowerCase()).includes('reason')) {
+          can = [...can, ...filtered.map(r => ({ store: r.Store||"", rep: r['Rep Name']||r.Rep||"", customerId: String(r['Customer ID']||r.Account||""), cancelDate: r['Cancel Date']||"", reason: r.Reason||"Unknown" }))];
         } else {
-          newRaw = [...newRaw, ...filtered.map(r => ({
-            store: r.Store || r.store || r['Store Name'] || "",
-            rep: r['Rep Name'] || r.Rep || r.rep || r.Salesperson || "",
-            customerId: String(r['Customer ID'] || r.customerId || r.Account || ""),
-            type: r.Type || r.type || "",
-            subType: r['Sub Type'] || r.SubType || r.subType || "",
-            lob: r.LOB || r.lob || ""
-          }))];
+          raw = [...raw, ...filtered.map(r => ({ store: r.Store||"", rep: r['Rep Name']||r.Rep||"", customerId: String(r['Customer ID']||r.Account||""), type: r.Type||"", subType: r.SubType||"", lob: r.LOB||"" }))];
         }
       });
-
-      if (newRaw.length === 0 && newCancel.length === 0) {
-        alert(`Finished! Checked ${totalChecked} rows across all sheets, but found 0 matches for RD/RSD: "${RSD_NAME_FILTER}".`);
-      } else {
-        RAW_DATA = newRaw;
-        CANCEL_DATA = newCancel;
-        localStorage.setItem('ex_raw_jb', JSON.stringify(RAW_DATA));
-        localStorage.setItem('ex_can_jb', JSON.stringify(CANCEL_DATA));
-        activeStats = processStats();
-        selectedKey = null;
-        alert(`Successfully updated! Found ${newRaw.length} exceptions and ${newCancel.length} cancellations for your region.`);
-        closeModals();
-        switchView('rep');
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Error parsing file. Ensure it is a valid Excel (.xlsx) document.");
-    } finally {
-      btn.disabled = false;
-      btn.textContent = "PROCESS & FILTER";
-    }
+      if (window.pushDataToCloud) { await window.pushDataToCloud(raw, can); }
+      window.RAW_DATA = raw; window.CANCEL_DATA = can; window.activeStats = window.processStats();
+      window.render(); alert("Report Loaded Locally."); window.closeModals();
+    } catch(err) { alert("Format Error"); } finally { b.disabled = false; b.textContent = "PROCESS & SYNC"; }
   };
-  reader.readAsArrayBuffer(file);
+  r.readAsArrayBuffer(f);
 }
 
-function downloadDashboard() {
-    const html = document.documentElement.outerHTML;
-    const blob = new Blob([html], { type: 'text/html' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = "Exceptions_Report_Tool.html";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-}
+window.switchView = function(v) { currentView = v; selectedKey = null; expandedIssue = null; document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.id === `btn-${v}`)); window.render(); }
+window.selectItem = function(k) { selectedKey = k; expandedIssue = null; window.render(); }
+window.toggleIssue = function(k) { expandedIssue = (expandedIssue === k ? null : k); window.renderMain(); }
+window.onSearch = function() { searchQuery = document.getElementById("search-input").value; window.renderSidebar(); }
 
-function switchView(v) {
-  currentView = v; selectedKey = null; expandedIssue = null;
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  const target = document.getElementById(`btn-${v}`);
-  if(target) target.classList.add('active');
-  renderSidebar(); renderMain();
-}
-
-function selectItem(key) { selectedKey = key; expandedIssue = null; renderMain(); renderSidebar(); }
-function toggleIssue(key) { expandedIssue = (expandedIssue === key ? null : key); renderMain(); }
-function onSearch() { searchQuery = document.getElementById("search-input").value; renderSidebar(); }
-
-renderSidebar();
-renderMain();
+// Initial Render
+window.activeStats = window.processStats();
+window.render();
 </script>
-
-</body></html>
+</body>
+</html>
