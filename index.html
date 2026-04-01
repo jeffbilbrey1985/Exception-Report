@@ -1,0 +1,1868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Exceptions Report — Jeffrey Bilbrey Region</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'DM Mono','Courier New',monospace;background:#0f0f13;min-height:100vh;color:#e2e8f0;}
+  ::-webkit-scrollbar{width:6px;height:6px;}
+  ::-webkit-scrollbar-track{background:#1a1a22;}
+  ::-webkit-scrollbar-thumb{background:#334155;border-radius:3px;}
+  .header{background:#0f0f13;border-bottom:1px solid #1e2030;padding:20px 28px;display:flex;align-items:center;justify-content:space-between;}
+  .header-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#fff;letter-spacing:-0.5px;}
+  .header-sub{font-size:11px;color:#475569;margin-top:2px;letter-spacing:2px;text-transform:uppercase;}
+  .tab-btn{cursor:pointer;padding:8px 20px;border-radius:8px;font-family:inherit;font-size:13px;transition:all 0.2s;border:1px solid #1e2030;background:#16161f;color:#64748b;}
+  .tab-btn.active{background:#6366f1;color:white;border-color:#6366f1;}
+  .tab-btn:hover:not(.active){color:#94a3b8;border-color:#334155;}
+  .layout{display:flex;height:calc(100vh - 73px);}
+  .sidebar{width:280px;border-right:1px solid #1e2030;padding:16px 14px;overflow-y:auto;flex-shrink:0;}
+  .main{flex:1;overflow-y:auto;padding:24px 28px;}
+  .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;}
+  .stat-card{background:#16161f;border:1px solid #1e2030;border-radius:10px;padding:16px 20px;}
+  .stat-num{font-size:22px;font-weight:500;}
+  .stat-label{font-size:10px;color:#475569;text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
+  .mini-chart{background:#16161f;border:1px solid #1e2030;border-radius:12px;padding:12px 14px;margin-bottom:14px;}
+  .mini-chart-title{font-size:10px;color:#475569;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;}
+  .bar-row{margin-bottom:8px;}
+  .bar-row-labels{display:flex;justify-content:space-between;font-size:10px;margin-bottom:3px;}
+  .bar-track{height:6px;border-radius:3px;background:#1e2030;overflow:hidden;}
+  .bar-fill{height:100%;border-radius:3px;transition:width 0.4s ease;}
+  .search-wrap{position:relative;margin-bottom:12px;}
+  .search-input{width:100%;background:#16161f;border:1px solid #1e2030;border-radius:8px;padding:8px 12px 8px 32px;font-family:inherit;font-size:12px;color:#cbd5e1;outline:none;transition:border-color 0.2s;}
+  .search-input::placeholder{color:#334155;}
+  .search-input:focus{border-color:#6366f1;}
+  .search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#475569;font-size:13px;pointer-events:none;}
+  .list-label{font-size:10px;color:#475569;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px;}
+  .list-item{cursor:pointer;padding:10px 14px;border-radius:8px;border:1px solid #1e2030;transition:all 0.15s;margin-bottom:6px;background:#16161f;}
+  .list-item:hover{border-color:#334155;background:#1a1a24;}
+  .list-item.active{border-color:#6366f1;background:#1e1e30;}
+  .list-item-name{font-size:12px;font-weight:500;color:#cbd5e1;}
+  .list-item.active .list-item-name{color:#a5b4fc;}
+  .list-item-sub{font-size:10px;color:#475569;margin-top:2px;}
+  .detail-header{margin-bottom:24px;}
+  .detail-title{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:#fff;}
+  .detail-sub{font-size:12px;color:#475569;margin-top:4px;}
+  .badge-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;}
+  .issue-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:500;border:1px solid;}
+  .issue-card{border-radius:10px;border:1px solid;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:filter 0.15s;}
+  .issue-card:hover{filter:brightness(1.05);}
+  .issue-card-header{display:flex;align-items:center;justify-content:space-between;}
+  .issue-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px;flex-shrink:0;}
+  .issue-name{font-size:13px;font-weight:500;}
+  .issue-meta{font-size:11px;color:#64748b;margin-top:1px;}
+  .issue-toggle{color:#94a3b8;font-size:16px;}
+  .issue-body{margin-top:14px;padding-top:14px;}
+  .issue-desc{border-radius:8px;padding:10px 14px;font-size:12px;line-height:1.6;color:#475569;margin-bottom:14px;background:rgba(0,0,0,0.08);}
+  .section-label{font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;}
+  .tag{display:inline-block;background:#1e2030;border:1px solid #2d3148;color:#94a3b8;border-radius:6px;padding:2px 8px;font-size:10px;margin:2px;letter-spacing:0.5px;}
+  .rep-tag{display:inline-block;border-radius:6px;padding:2px 8px;font-size:11px;margin:2px;}
+  .lob-pill{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:500;margin:2px;letter-spacing:0.5px;background:#1e2030;color:#94a3b8;border:1px solid #2d3148;}
+  .acct-table{width:100%;border-collapse:collapse;font-size:11px;margin-top:4px;}
+  .acct-table th{text-align:left;color:#64748b;font-weight:400;padding:4px 8px;border-bottom:1px solid #1e2030;text-transform:uppercase;letter-spacing:1px;font-size:10px;}
+  .acct-table td{padding:5px 8px;border-bottom:1px solid rgba(30,32,48,0.5);color:#cbd5e1;vertical-align:top;}
+  .acct-table tr:last-child td{border-bottom:none;}
+  .acct-table tr:hover td{background:rgba(255,255,255,0.02);}
+  .lob-hsi{background:#1e3a5f;color:#60a5fa;border-color:#1d4ed8;}
+  .lob-video{background:#3b1f5e;color:#c084fc;border-color:#7c3aed;}
+  .lob-xfm{background:#3b1a1a;color:#f87171;border-color:#dc2626;}
+  .lob-xhs{background:#1a3320;color:#4ade80;border-color:#16a34a;}
+  .lob-cdv{background:#1a2e3b;color:#38bdf8;border-color:#0284c7;}
+  .lob-other{background:#1e2030;color:#94a3b8;border-color:#334155;}
+  .empty-title{font-family:'Syne',sans-serif;font-size:40px;font-weight:800;color:#1e2030;margin-bottom:12px;}
+  .empty-sub{font-size:13px;letter-spacing:1px;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="header-title">EXCEPTIONS REPORT</div>
+    <div class="header-sub">Commission Loss Analysis · Jeffrey Bilbrey Region</div>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="tab-btn active" id="btn-rep" onclick="switchView('rep')">By Rep</button>
+    <button class="tab-btn" id="btn-store" onclick="switchView('store')">By Store</button>
+    <button class="tab-btn" id="btn-exception" onclick="switchView('exception')">By Exception</button>
+    <button class="tab-btn" id="btn-cancel" onclick="switchView('cancel')">Cancellations</button>
+  </div>
+</div>
+
+<div class="layout">
+  <div class="sidebar" id="sidebar">
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-num" style="color:#f97316;" id="total-count">0</div>
+        <div class="stat-label">Total Exceptions</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" style="color:#6366f1;" id="rep-count">0</div>
+        <div class="stat-label" id="count-label">Reps Affected</div>
+      </div>
+    </div>
+    <div class="mini-chart">
+      <div class="mini-chart-title">Top Issues</div>
+      <div id="top-issues-chart"></div>
+    </div>
+    <div class="list-label" id="list-label">Reps</div>
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input class="search-input" id="search-input" type="text" placeholder="Search by name..." oninput="onSearch()"/>
+    </div>
+    <div id="list-container"></div>
+  </div>
+
+  <div class="main" id="main-content">
+    <div class="empty-state">
+      <div class="empty-title" id="empty-title">SELECT A REP</div>
+      <div class="empty-sub">Choose from the list to view detailed exceptions</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const RAW_DATA = [
+  {store:"Frankfort",rep:"",date:"11/4/25",type:"Comp Plan Requirement",subType:"More than 60 days to install",lob:"HSI"},
+  {store:"Evanston",rep:"Gavin Williams",date:"12/19/25",type:"Comp Plan Requirement",subType:"More than 60 days to install",lob:"XFM"},
+  {store:"Cicero",rep:"Julia Ariza",date:"12/19/25",type:"Comp Plan Requirement",subType:"More than 60 days to install",lob:"XFM"},
+  {store:"Evanston",rep:"Gavin Williams",date:"12/19/25",type:"Comp Plan Requirement",subType:"More than 60 days to install",lob:"XFM"},
+  {store:"Cicero",rep:"Julia Ariza",date:"12/21/25",type:"Comp Plan Requirement",subType:"More than 60 days to install",lob:"XFM"},
+  {store:"DeKalb",rep:"Dashawn Dean",date:"12/29/25",type:"Comp Plan Requirement",subType:"More than 60 days to install",lob:"XFM"},
+  {store:"Evanston",rep:"Suyal Ullah",date:"12/30/25",type:"Comp Plan Requirement",subType:"More than 60 days to install",lob:"XFM"},
+  {store:"Round Lake Beach",rep:"Donnie Lee",date:"1/3/26",type:"Comp Plan Requirement",subType:"More than 60 days to install",lob:"XFM"},
+  {store:"Valparaiso",rep:"Emari Washington",date:"1/6/26",type:"Comp Plan Requirement",subType:"More than 60 days to install",lob:"Video"},
+  {store:"South Skokie, IL",rep:"Alexis Rodriguez",date:"1/7/26",type:"Comp Plan Requirement",subType:"More than 60 days to install",lob:"XFM"},
+  {store:"Schererville, IN",rep:"April Vasquez",date:"1/17/26",type:"Comp Plan Requirement",subType:"More than 60 days to install",lob:"XFM"},
+  {store:"DeKalb",rep:"Aaron Bowles",date:"2/3/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"DeKalb",rep:"Aaron Bowles",date:"2/3/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"DeKalb",rep:"Aaron Bowles",date:"2/3/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Hammond Mills",rep:"Alexis Bell",date:"2/14/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Hammond Mills",rep:"Alexis Bell",date:"2/14/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Hammond Mills",rep:"Alexis Bell",date:"2/14/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Frankfort",rep:"Aiden Bolhuis",date:"2/23/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Frankfort",rep:"Aiden Bolhuis",date:"2/23/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"DeKalb",rep:"Dashawn Dean",date:"2/23/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Frankfort",rep:"Aiden Bolhuis",date:"2/23/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Frankfort",rep:"Aiden Bolhuis",date:"2/23/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"CDV"},
+  {store:"Evergreen Park",rep:"Vivian Avila",date:"2/26/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"HSI"},
+  {store:"Tinley Park",rep:"Emily Guzman",date:"2/27/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Cicero",rep:"Cristofer Loredo",date:"2/27/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"CDV"},
+  {store:"Cicero",rep:"Cristofer Loredo",date:"2/27/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Cicero",rep:"Cristofer Loredo",date:"2/27/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Cicero",rep:"Sarah Penablanca",date:"2/28/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Cicero",rep:"Sarah Penablanca",date:"2/28/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Kildeer",rep:"Kenisha Banks",date:"2/28/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"XHS"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/1/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Burbank",rep:"Arturo Cahue",date:"3/1/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/1/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/1/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/1/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/1/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/1/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/1/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/1/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"XHS"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/1/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/1/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Valparaiso",rep:"Anthony Suleski",date:"3/1/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Valparaiso",rep:"Anthony Suleski",date:"3/1/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Valparaiso",rep:"Anthony Suleski",date:"3/1/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Cicero",rep:"Sarah Penablanca",date:"3/1/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/1/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/1/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/1/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Valparaiso",rep:"",date:"3/1/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/1/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Burbank",rep:"Arturo Cahue",date:"3/1/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Elkhart",rep:"Madelyn Holtgren",date:"3/1/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Elkhart",rep:"Madelyn Holtgren",date:"3/1/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Valparaiso",rep:"Malyn Anderson",date:"3/1/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Evergreen Park",rep:"Kamar Thomas",date:"3/1/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Elkhart",rep:"Madelyn Holtgren",date:"3/1/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Elkhart",rep:"Alyissa Davis",date:"3/1/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Burbank",rep:"Arturo Cahue",date:"3/1/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Burbank",rep:"Arturo Cahue",date:"3/1/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Burbank",rep:"Arturo Cahue",date:"3/1/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Burbank",rep:"Antonio Carradine",date:"3/1/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Evergreen Park",rep:"",date:"3/1/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Burbank",rep:"Antonio Carradine",date:"3/1/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Burbank",rep:"Antonio Carradine",date:"3/1/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"South Bend, IN",rep:"Juan Padilla",date:"3/1/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"South Bend, IN",rep:"Juan Padilla",date:"3/1/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"South Bend, IN",rep:"Juan Padilla",date:"3/1/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Valparaiso",rep:"Anthony Suleski",date:"3/1/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Valparaiso",rep:"Anthony Suleski",date:"3/1/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Evergreen Park",rep:"Kamar Thomas",date:"3/1/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Cicero",rep:"Angel Torres",date:"3/1/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Burbank",rep:"Arturo Cahue",date:"3/1/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Schererville, IN",rep:"April Vasquez",date:"3/1/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Schererville, IN",rep:"April Vasquez",date:"3/1/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Glenview",rep:"Alexandro Flores",date:"3/1/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Burbank",rep:"Arturo Cahue",date:"3/1/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Burbank",rep:"Arturo Cahue",date:"3/1/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Schererville, IN",rep:"April Vasquez",date:"3/1/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Cicero",rep:"Angel Torres",date:"3/1/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Cicero",rep:"Angel Torres",date:"3/1/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Evanston",rep:"Gavin Williams",date:"3/2/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Valparaiso",rep:"Nathaniel Brogdon",date:"3/2/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Valparaiso",rep:"Anthony Evans",date:"3/2/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Valparaiso",rep:"Anthony Evans",date:"3/2/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Valparaiso",rep:"Anthony Evans",date:"3/2/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"DeKalb",rep:"Dashawn Dean",date:"3/2/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"CDV"},
+  {store:"Glenview",rep:"Linda Weeks",date:"3/2/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Glenview",rep:"Linda Weeks",date:"3/2/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Glenview",rep:"Linda Weeks",date:"3/2/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"CDV"},
+  {store:"Burbank",rep:"Jalen Logan",date:"3/2/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Burbank",rep:"Jalen Logan",date:"3/2/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Burbank",rep:"Jalen Logan",date:"3/2/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Valparaiso",rep:"Nathaniel Brogdon",date:"3/2/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Valparaiso",rep:"Nathaniel Brogdon",date:"3/2/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Valparaiso",rep:"Nathaniel Brogdon",date:"3/2/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Round Lake Beach",rep:"Isabel Betancourt",date:"3/2/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"HSI"},
+  {store:"Hammond Mills",rep:"Donae Jones",date:"3/2/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Evanston",rep:"Gavin Williams",date:"3/2/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Evanston",rep:"Gavin Williams",date:"3/2/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Hammond Mills",rep:"Donae Jones",date:"3/2/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Hammond Mills",rep:"Donae Jones",date:"3/2/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"DeKalb",rep:"Dashawn Dean",date:"3/2/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Evergreen Park",rep:"Kamar Thomas",date:"3/2/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Evergreen Park",rep:"Kamar Thomas",date:"3/2/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Evergreen Park",rep:"Kamar Thomas",date:"3/2/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Evergreen Park",rep:"Kamar Thomas",date:"3/2/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Glenview",rep:"Eric Gonzalez",date:"3/2/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Hammond Mills",rep:"Donae Jones",date:"3/2/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Hammond Mills",rep:"Donae Jones",date:"3/2/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Hammond Mills",rep:"Donae Jones",date:"3/2/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Glenview",rep:"Eric Gonzalez",date:"3/2/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Glenview",rep:"Eric Gonzalez",date:"3/2/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Valparaiso",rep:"Malyn Anderson",date:"3/2/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Valparaiso",rep:"Malyn Anderson",date:"3/2/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Hammond Mills",rep:"Donae Jones",date:"3/2/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Johnson City, TN",rep:"Justin Wyatt",date:"3/2/26",type:"Comp Plan Requirement",subType:"Customer had FLEX service within 120 Days",lob:"Video"},
+  {store:"Schererville, IN",rep:"Brandon Smelko",date:"3/2/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Greeneville",rep:"Dalton Arwodd",date:"3/2/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Greeneville",rep:"Angela Hahn",date:"3/2/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"XHS"},
+  {store:"Greeneville",rep:"Matthew Brooks",date:"3/2/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Greeneville",rep:"Matthew Brooks",date:"3/2/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Oak Ridge",rep:"Sara Agle",date:"3/2/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"XHS"},
+  {store:"Oak Ridge",rep:"Zoe Spradling",date:"3/2/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Hammond Mills",rep:"Donae Jones",date:"3/2/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"XHS"},
+  {store:"Hammond Mills",rep:"Donae Jones",date:"3/2/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Hammond Mills",rep:"Donae Jones",date:"3/2/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Frankfort",rep:"Frankie Pedraza-Scalfano",date:"3/2/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"South Knoxville",rep:"Kayla Kirkland",date:"3/2/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"HSI"},
+  {store:"South Knoxville",rep:"Kayla Kirkland",date:"3/2/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"Other"},
+  {store:"South Knoxville",rep:"Kayla Kirkland",date:"3/2/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"Video"},
+  {store:"South Knoxville",rep:"Kayla Kirkland",date:"3/2/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"XHS"},
+  {store:"Bourbonnais",rep:"Jose Quintanilla",date:"3/2/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Oak Ridge",rep:"Zoe Spradling",date:"3/2/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Oak Ridge",rep:"Zoe Spradling",date:"3/2/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Oak Ridge",rep:"Zoe Spradling",date:"3/2/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"XHS"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/3/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/3/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/3/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/3/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Frankfort",rep:"Aiden Bolhuis",date:"3/3/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Frankfort",rep:"Aiden Bolhuis",date:"3/3/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Frankfort",rep:"Aiden Bolhuis",date:"3/3/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Hammond Mills",rep:"Jeremiah Watson",date:"3/3/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Hammond Mills",rep:"Jeremiah Watson",date:"3/3/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Frankfort",rep:"Frankie Pedraza-Scalfano",date:"3/3/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"Other"},
+  {store:"Frankfort",rep:"Frankie Pedraza-Scalfano",date:"3/3/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"HSI"},
+  {store:"Frankfort",rep:"Frankie Pedraza-Scalfano",date:"3/3/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"CDV"},
+  {store:"Burbank",rep:"Zuri Salazar",date:"3/3/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Burbank",rep:"Zuri Salazar",date:"3/3/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Round Lake Beach",rep:"Joseph Vasquez",date:"3/3/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Round Lake Beach",rep:"Joseph Vasquez",date:"3/3/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Round Lake Beach",rep:"Joseph Vasquez",date:"3/3/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Cicero",rep:"Francisco Salazar",date:"3/3/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Kildeer",rep:"Matthew Rodriguez",date:"3/3/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Evergreen Park",rep:"Jesus Romo",date:"3/3/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"South Skokie, IL",rep:"Imaad Dhorajiwala",date:"3/3/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Cicero",rep:"Francisco Salazar",date:"3/3/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Kildeer",rep:"Matthew Rodriguez",date:"3/3/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Kildeer",rep:"Matthew Rodriguez",date:"3/3/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Evergreen Park",rep:"",date:"3/3/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"XHS"},
+  {store:"Evergreen Park",rep:"",date:"3/3/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Evergreen Park",rep:"",date:"3/3/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Kildeer",rep:"Matthew Rodriguez",date:"3/3/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Evergreen Park",rep:"",date:"3/3/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Kildeer",rep:"Matthew Rodriguez",date:"3/3/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Kildeer",rep:"Matthew Rodriguez",date:"3/3/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/3/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/3/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Oak Ridge",rep:"Stefan Murrell-Onley",date:"3/3/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Valparaiso",rep:"Shamika Austin",date:"3/3/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Valparaiso",rep:"Shamika Austin",date:"3/3/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Hammond Mills",rep:"Darryl Charles",date:"3/3/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"XHS"},
+  {store:"Hammond Mills",rep:"Darryl Charles",date:"3/3/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Johnson City, TN",rep:"Tre\'vonn Fields",date:"3/3/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/3/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Greeneville",rep:"Dalton Arwodd",date:"3/3/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/3/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Hammond Mills",rep:"Darryl Charles",date:"3/3/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/3/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/3/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/3/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/3/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Valparaiso",rep:"Nathaniel Brogdon",date:"3/3/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Greeneville",rep:"Dalton Arwodd",date:"3/4/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Burbank",rep:"Jacqueline Benitez",date:"3/4/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Johnson City, TN",rep:"Tre\'vonn Fields",date:"3/4/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Evanston",rep:"Jamal Lomax",date:"3/4/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Johnson City, TN",rep:"Raymond Johnson",date:"3/4/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Valparaiso",rep:"Anthony Evans",date:"3/4/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Valparaiso",rep:"Anthony Evans",date:"3/4/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Valparaiso",rep:"Anthony Evans",date:"3/4/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Evanston",rep:"Jamal Lomax",date:"3/4/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Glenview",rep:"Alexandro Flores",date:"3/4/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Glenview",rep:"Alexandro Flores",date:"3/4/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Glenview",rep:"Alexandro Flores",date:"3/4/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Evergreen Park",rep:"Omar Bustamante",date:"3/4/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"Video"},
+  {store:"Evanston",rep:"Jamal Lomax",date:"3/4/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Evergreen Park",rep:"Omar Bustamante",date:"3/4/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"Other"},
+  {store:"Evergreen Park",rep:"Omar Bustamante",date:"3/4/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"HSI"},
+  {store:"Greeneville",rep:"Nicholes Gilland",date:"3/4/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"HSI"},
+  {store:"Greeneville",rep:"Nicholes Gilland",date:"3/4/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"Other"},
+  {store:"Greeneville",rep:"Nicholes Gilland",date:"3/4/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"Video"},
+  {store:"Michigan City",rep:"Keegan Canada",date:"3/4/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"South Knoxville",rep:"Victor Mize",date:"3/4/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Schererville, IN",rep:"Michael Jackson",date:"3/4/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Schererville, IN",rep:"Michael Jackson",date:"3/4/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"South Knoxville",rep:"Victor Mize",date:"3/4/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"XHS"},
+  {store:"Michigan City",rep:"Keegan Canada",date:"3/4/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"South Knoxville",rep:"Victor Mize",date:"3/4/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Schererville, IN",rep:"Michael Jackson",date:"3/4/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Hammond Mills",rep:"Victoria Ponce de Leon",date:"3/4/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Hammond Mills",rep:"Victoria Ponce de Leon",date:"3/4/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"XHS"},
+  {store:"Hammond Mills",rep:"Victoria Ponce de Leon",date:"3/4/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"South Knoxville",rep:"Victor Mize",date:"3/4/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Hammond Mills",rep:"Victoria Ponce de Leon",date:"3/4/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Evergreen Park",rep:"Vivian Avila",date:"3/4/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Evergreen Park",rep:"Vivian Avila",date:"3/4/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Evergreen Park",rep:"Vivian Avila",date:"3/4/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Valparaiso",rep:"Anthony Suleski",date:"3/4/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Valparaiso",rep:"Anthony Suleski",date:"3/4/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Valparaiso",rep:"Anthony Suleski",date:"3/4/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"XHS"},
+  {store:"Frankfort",rep:"Erick Smith",date:"3/4/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"HSI"},
+  {store:"Valparaiso",rep:"Anthony Suleski",date:"3/4/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Bourbonnais",rep:"Nancy Trombley",date:"3/5/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Bourbonnais",rep:"Nancy Trombley",date:"3/5/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Frankfort",rep:"Erick Smith",date:"3/5/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/5/26",type:"Comp Plan Requirement",subType:"Cancel Rekey",lob:"HSI"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/5/26",type:"Comp Plan Requirement",subType:"Cancel Rekey",lob:"Other"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/5/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Greeneville",rep:"Angela Hahn",date:"3/5/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/5/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/5/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Burbank",rep:"Arturo Cahue",date:"3/5/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Burbank",rep:"Arturo Cahue",date:"3/5/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Michigan City",rep:"Keegan Canada",date:"3/5/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/5/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Burbank",rep:"Arturo Cahue",date:"3/5/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Burbank",rep:"Arturo Cahue",date:"3/5/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Burbank",rep:"Arturo Cahue",date:"3/5/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Valparaiso",rep:"",date:"3/5/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"XHS"},
+  {store:"Burbank",rep:"Arturo Cahue",date:"3/5/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"South Skokie, IL",rep:"Ahmed Faraz",date:"3/5/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"HSI"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/5/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Burbank",rep:"Arturo Cahue",date:"3/5/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Schererville, IN",rep:"Brandon Smelko",date:"3/5/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Schererville, IN",rep:"Brandon Smelko",date:"3/5/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Schererville, IN",rep:"Brandon Smelko",date:"3/5/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Evanston",rep:"Suyal Ullah",date:"3/5/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Valparaiso",rep:"",date:"3/5/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Johnson City, TN",rep:"Tre\'vonn Fields",date:"3/5/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Schererville, IN",rep:"April Vasquez",date:"3/5/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/5/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"XHS"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/5/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/5/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/5/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/5/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/5/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Cicero",rep:"Sarah Penablanca",date:"3/5/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Evergreen Park",rep:"Alicia Valdez",date:"3/5/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Valparaiso",rep:"",date:"3/5/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Valparaiso",rep:"",date:"3/5/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Valparaiso",rep:"",date:"3/5/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"South Knoxville",rep:"Nicholas Padgett",date:"3/5/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Michigan City",rep:"Keegan Canada",date:"3/5/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/5/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/5/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/5/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/5/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/5/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/5/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"South Skokie, IL",rep:"Steev Qaryo",date:"3/6/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Valparaiso",rep:"",date:"3/6/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"CDV"},
+  {store:"Valparaiso",rep:"",date:"3/6/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Valparaiso",rep:"",date:"3/6/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Frankfort",rep:"Aiden Bolhuis",date:"3/6/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Tinley Park",rep:"Darionne Townsend",date:"3/6/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Tinley Park",rep:"Darionne Townsend",date:"3/6/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Johnson City, TN",rep:"Raymond Johnson",date:"3/6/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Valparaiso",rep:"",date:"3/6/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Round Lake Beach",rep:"Isabel Betancourt",date:"3/6/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Burbank",rep:"Jacqueline Benitez",date:"3/6/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Uptown",rep:"Ronaldinho Llivi",date:"3/6/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Uptown",rep:"Ronaldinho Llivi",date:"3/6/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Burbank",rep:"Jacqueline Benitez",date:"3/6/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Burbank",rep:"Jacqueline Benitez",date:"3/6/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Round Lake Beach",rep:"Isabel Betancourt",date:"3/6/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Bourbonnais",rep:"Pierre Henderson",date:"3/6/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Tinley Park",rep:"Emily Guzman",date:"3/6/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Cicero",rep:"Cristofer Loredo",date:"3/6/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Frankfort",rep:"Aiden Bolhuis",date:"3/6/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Frankfort",rep:"Noah Cleveland",date:"3/6/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Michigan City",rep:"Keegan Canada",date:"3/6/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Michigan City",rep:"Keegan Canada",date:"3/6/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Frankfort",rep:"Erick Smith",date:"3/6/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Frankfort",rep:"Erick Smith",date:"3/6/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Frankfort",rep:"Frankie Pedraza-Scalfano",date:"3/6/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Burbank",rep:"Arturo Cahue",date:"3/6/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Burbank",rep:"Arturo Cahue",date:"3/6/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Frankfort",rep:"Erick Smith",date:"3/6/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Frankfort",rep:"Aiden Bolhuis",date:"3/6/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Valparaiso",rep:"",date:"3/6/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Bourbonnais",rep:"Pierre Henderson",date:"3/6/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Valparaiso",rep:"",date:"3/6/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Valparaiso",rep:"Daniel Long",date:"3/6/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Bourbonnais",rep:"Pierre Henderson",date:"3/6/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Oak Ridge",rep:"",date:"3/6/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"HSI"},
+  {store:"Frankfort",rep:"Erick Smith",date:"3/6/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Johnson City, TN",rep:"Raymond Johnson",date:"3/6/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Frankfort",rep:"Aiden Bolhuis",date:"3/6/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Frankfort",rep:"Erick Smith",date:"3/6/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Frankfort",rep:"Erick Smith",date:"3/6/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Michigan City",rep:"Keegan Canada",date:"3/6/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Frankfort",rep:"Aiden Bolhuis",date:"3/6/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Tinley Park",rep:"Emily Guzman",date:"3/6/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Frankfort",rep:"Erick Smith",date:"3/6/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Tinley Park",rep:"Emily Guzman",date:"3/6/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Burbank",rep:"Christopher Coleman",date:"3/6/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"HSI"},
+  {store:"Frankfort",rep:"Aiden Bolhuis",date:"3/6/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Evergreen Park",rep:"Omar Bustamante",date:"3/6/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Burbank",rep:"Arturo Cahue",date:"3/6/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Valparaiso",rep:"Anthony Suleski",date:"3/6/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"XHS"},
+  {store:"Valparaiso",rep:"Anthony Suleski",date:"3/6/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Valparaiso",rep:"Anthony Suleski",date:"3/6/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Valparaiso",rep:"Anthony Suleski",date:"3/6/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Frankfort",rep:"Frankie Pedraza-Scalfano",date:"3/6/26",type:"Comp Plan Requirement",subType:"Cancel Rekey",lob:"Other"},
+  {store:"Frankfort",rep:"Frankie Pedraza-Scalfano",date:"3/6/26",type:"Comp Plan Requirement",subType:"Cancel Rekey",lob:"HSI"},
+  {store:"Oak Ridge",rep:"Zoe Spradling",date:"3/6/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Michigan City",rep:"Linda Zoliner",date:"3/7/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Oak Ridge",rep:"Erika McFall",date:"3/7/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Kildeer",rep:"Kenisha Banks",date:"3/7/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Frankfort",rep:"Frankie Pedraza-Scalfano",date:"3/7/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Frankfort",rep:"Frankie Pedraza-Scalfano",date:"3/7/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/7/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/7/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/7/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Frankfort",rep:"Frankie Pedraza-Scalfano",date:"3/7/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Evergreen Park",rep:"Kamar Thomas",date:"3/7/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Valparaiso",rep:"Anthony Suleski",date:"3/7/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Burbank",rep:"Arturo Cahue",date:"3/7/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Frankfort",rep:"Frankie Pedraza-Scalfano",date:"3/7/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Uptown",rep:"Hunter Dodge",date:"3/7/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Valparaiso",rep:"Anthony Suleski",date:"3/7/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"XHS"},
+  {store:"Evergreen Park",rep:"Kamar Thomas",date:"3/7/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Evergreen Park",rep:"Kamar Thomas",date:"3/7/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Evergreen Park",rep:"Kamar Thomas",date:"3/7/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Evergreen Park",rep:"Kamar Thomas",date:"3/7/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Valparaiso",rep:"Anthony Suleski",date:"3/7/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Valparaiso",rep:"Anthony Suleski",date:"3/7/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"South Bend, IN",rep:"Juan Padilla",date:"3/7/26",type:"Comp Plan Requirement",subType:"No Camera Sold With Order",lob:"XHS"},
+  {store:"South Bend, IN",rep:"Juan Padilla",date:"3/7/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"South Bend, IN",rep:"Juan Padilla",date:"3/7/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"South Bend, IN",rep:"Jorge Tafoya",date:"3/7/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"South Bend, IN",rep:"Juan Padilla",date:"3/7/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Valparaiso",rep:"Shamika Austin",date:"3/7/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Valparaiso",rep:"Shamika Austin",date:"3/7/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Schererville, IN",rep:"Michael Jackson",date:"3/7/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Schererville, IN",rep:"Michael Jackson",date:"3/7/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Oak Ridge",rep:"Zoe Spradling",date:"3/8/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Oak Ridge",rep:"Zoe Spradling",date:"3/8/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Valparaiso",rep:"Anthony Suleski",date:"3/8/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/8/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Schererville, IN",rep:"April Vasquez",date:"3/8/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Schererville, IN",rep:"April Vasquez",date:"3/8/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Valparaiso",rep:"Anthony Suleski",date:"3/8/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Valparaiso",rep:"Anthony Suleski",date:"3/8/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/8/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Schererville, IN",rep:"April Vasquez",date:"3/8/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Schererville, IN",rep:"April Vasquez",date:"3/8/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/8/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Hammond Mills",rep:"Reina Salgado",date:"3/8/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"South Skokie, IL",rep:"Ahmed Faraz",date:"3/8/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/8/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"XHS"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/8/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/8/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/8/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Hammond Mills",rep:"Reina Salgado",date:"3/8/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Schererville, IN",rep:"April Vasquez",date:"3/8/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Michigan City",rep:"Linda Zoliner",date:"3/8/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Michigan City",rep:"Linda Zoliner",date:"3/8/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Schererville, IN",rep:"April Vasquez",date:"3/8/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Hammond Mills",rep:"Reina Salgado",date:"3/8/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Bourbonnais",rep:"Nancy Trombley",date:"3/8/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Valparaiso",rep:"Denzel Brent",date:"3/9/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Greeneville",rep:"Dalton Arwodd",date:"3/9/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"HSI"},
+  {store:"Michigan City",rep:"Collin Crooks",date:"3/9/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Tinley Park",rep:"Destini Kelley",date:"3/9/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Michigan City",rep:"Collin Crooks",date:"3/9/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"XHS"},
+  {store:"Burbank",rep:"Jacqueline Benitez",date:"3/9/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Hammond Mills",rep:"Timothy Bankston",date:"3/9/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"CDV"},
+  {store:"Hammond Mills",rep:"Timothy Bankston",date:"3/9/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"Other"},
+  {store:"Hammond Mills",rep:"Timothy Bankston",date:"3/9/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"Video"},
+  {store:"Hammond Mills",rep:"Donae Jones",date:"3/9/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Hammond Mills",rep:"Donae Jones",date:"3/9/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Hammond Mills",rep:"Donae Jones",date:"3/9/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Round Lake Beach",rep:"Isabel Betancourt",date:"3/9/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/9/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/9/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/9/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Frankfort",rep:"Aiden Bolhuis",date:"3/9/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Frankfort",rep:"Aiden Bolhuis",date:"3/9/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Frankfort",rep:"Aiden Bolhuis",date:"3/9/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Burbank",rep:"Jacqueline Benitez",date:"3/9/26",type:"Comp Plan Requirement",subType:"Cancel Rekey",lob:"Video"},
+  {store:"Burbank",rep:"Jacqueline Benitez",date:"3/9/26",type:"Comp Plan Requirement",subType:"Cancel Rekey",lob:"Other"},
+  {store:"Burbank",rep:"Jacqueline Benitez",date:"3/9/26",type:"Comp Plan Requirement",subType:"Cancel Rekey",lob:"HSI"},
+  {store:"Burbank",rep:"Jacqueline Benitez",date:"3/9/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Burbank",rep:"Jacqueline Benitez",date:"3/9/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Burbank",rep:"Jacqueline Benitez",date:"3/9/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Evergreen Park",rep:"Juan Carrillo",date:"3/9/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Evergreen Park",rep:"Juan Carrillo",date:"3/9/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Glenview",rep:"Aedo Yonan",date:"3/9/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"XHS"},
+  {store:"Uptown",rep:"Ronaldinho Llivi",date:"3/9/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Round Lake Beach",rep:"Isabel Betancourt",date:"3/9/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Round Lake Beach",rep:"Isabel Betancourt",date:"3/9/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Evergreen Park",rep:"",date:"3/9/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Evergreen Park",rep:"",date:"3/9/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Evergreen Park",rep:"",date:"3/9/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Evergreen Park",rep:"",date:"3/9/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Glenview",rep:"Aedo Yonan",date:"3/10/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"XHS"},
+  {store:"Frankfort",rep:"Frankie Pedraza-Scalfano",date:"3/10/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Frankfort",rep:"Frankie Pedraza-Scalfano",date:"3/10/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Frankfort",rep:"Frankie Pedraza-Scalfano",date:"3/10/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Cicero",rep:"Vanessa Cortez",date:"3/10/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/10/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"HSI"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/10/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"Other"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/10/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"Video"},
+  {store:"Cicero",rep:"Vanessa Cortez",date:"3/10/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Cicero",rep:"Vanessa Cortez",date:"3/10/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Evergreen Park",rep:"Juan Carrillo",date:"3/10/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/10/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/10/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/10/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Oak Ridge",rep:"Erika McFall",date:"3/10/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Cicero",rep:"Vanessa Cortez",date:"3/10/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"XHS"},
+  {store:"South Knoxville",rep:"Dereck Fesperman",date:"3/10/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Cicero",rep:"Vanessa Cortez",date:"3/10/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Hammond Mills",rep:"Darryl Charles",date:"3/10/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/10/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/10/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/10/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Cicero",rep:"Vanessa Cortez",date:"3/10/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"South Skokie, IL",rep:"Imaad Dhorajiwala",date:"3/10/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Cicero",rep:"Vanessa Cortez",date:"3/10/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Valparaiso",rep:"Nathaniel Brogdon",date:"3/10/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Glenview",rep:"Aedo Yonan",date:"3/10/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Burbank",rep:"Jalen Logan",date:"3/10/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Tinley Park",rep:"Osvaldo Garcia",date:"3/10/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Tinley Park",rep:"Osvaldo Garcia",date:"3/10/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Tinley Park",rep:"Osvaldo Garcia",date:"3/10/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Glenview",rep:"Aedo Yonan",date:"3/10/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Glenview",rep:"Aedo Yonan",date:"3/10/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Cicero",rep:"Vanessa Cortez",date:"3/10/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Glenview",rep:"Alexandro Flores",date:"3/11/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Frankfort",rep:"Aiden Bolhuis",date:"3/11/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"Video"},
+  {store:"Schererville, IN",rep:"Brandon Smelko",date:"3/11/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Frankfort",rep:"Aiden Bolhuis",date:"3/11/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"XHS"},
+  {store:"Frankfort",rep:"Erick Smith",date:"3/11/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Valparaiso",rep:"Anthony Evans",date:"3/11/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Valparaiso",rep:"Anthony Evans",date:"3/11/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Valparaiso",rep:"Anthony Evans",date:"3/11/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Evergreen Park",rep:"Kamar Thomas",date:"3/11/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Valparaiso",rep:"Alexander del Risco",date:"3/11/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Round Lake Beach",rep:"Joseph Vasquez",date:"3/11/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Valparaiso",rep:"Alexander del Risco",date:"3/11/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Round Lake Beach",rep:"Joseph Vasquez",date:"3/11/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Frankfort",rep:"Erick Smith",date:"3/11/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Burbank",rep:"Jalen Logan",date:"3/11/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"HSI"},
+  {store:"Frankfort",rep:"Erick Smith",date:"3/11/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Evergreen Park",rep:"Kamar Thomas",date:"3/11/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Round Lake Beach",rep:"Joseph Vasquez",date:"3/11/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Hammond Mills",rep:"Donae Jones",date:"3/11/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Valparaiso",rep:"",date:"3/11/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Frankfort",rep:"Aiden Bolhuis",date:"3/11/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Greeneville",rep:"Heidi Kautz",date:"3/11/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Bourbonnais",rep:"Kiara Jackson",date:"3/11/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Frankfort",rep:"Aiden Bolhuis",date:"3/11/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"Other"},
+  {store:"Valparaiso",rep:"Anthony Evans",date:"3/11/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Valparaiso",rep:"Anthony Evans",date:"3/11/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Frankfort",rep:"Aiden Bolhuis",date:"3/11/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"CDV"},
+  {store:"Hammond Mills",rep:"Donae Jones",date:"3/11/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Bourbonnais",rep:"Jose Quintanilla",date:"3/11/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Valparaiso",rep:"",date:"3/11/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Frankfort",rep:"Erick Smith",date:"3/11/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Hammond Mills",rep:"Donae Jones",date:"3/11/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Valparaiso",rep:"Anthony Evans",date:"3/11/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Frankfort",rep:"Aiden Bolhuis",date:"3/11/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"HSI"},
+  {store:"Valparaiso",rep:"",date:"3/11/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Valparaiso",rep:"",date:"3/11/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"XHS"},
+  {store:"South Bend, IN",rep:"Juan Padilla",date:"3/11/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Evergreen Park",rep:"Kamar Thomas",date:"3/12/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Kildeer",rep:"Matthew Rodriguez",date:"3/12/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"South Bend, IN",rep:"Juan Padilla",date:"3/12/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"South Bend, IN",rep:"Juan Padilla",date:"3/12/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Cicero",rep:"Sarah Penablanca",date:"3/12/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Hammond Mills",rep:"Darryl Charles",date:"3/12/26",type:"Comp Plan Requirement",subType:"Cancel Rekey",lob:"HSI"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/12/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/12/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/12/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Hammond Mills",rep:"Darryl Charles",date:"3/12/26",type:"Comp Plan Requirement",subType:"Cancel Rekey",lob:"Other"},
+  {store:"Burbank",rep:"Jacqueline Benitez",date:"3/12/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Tinley Park",rep:"Emily Guzman",date:"3/12/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Burbank",rep:"Jacqueline Benitez",date:"3/12/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Burbank",rep:"Jacqueline Benitez",date:"3/12/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Greeneville",rep:"Daniel Mitchell Jr.",date:"3/12/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Valparaiso",rep:"",date:"3/12/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Valparaiso",rep:"",date:"3/12/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Valparaiso",rep:"",date:"3/12/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Valparaiso",rep:"",date:"3/12/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Valparaiso",rep:"",date:"3/12/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"XHS"},
+  {store:"Evergreen Park",rep:"Vivian Avila",date:"3/12/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Johnson City, TN",rep:"Justin Wyatt",date:"3/12/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Johnson City, TN",rep:"Justin Wyatt",date:"3/12/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Frankfort",rep:"Erick Smith",date:"3/12/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Tinley Park",rep:"Emily Guzman",date:"3/12/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"South Skokie, IL",rep:"Steev Qaryo",date:"3/12/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"South Skokie, IL",rep:"Steev Qaryo",date:"3/12/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"South Skokie, IL",rep:"Steev Qaryo",date:"3/12/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"South Skokie, IL",rep:"Alexis Rodriguez",date:"3/12/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"South Skokie, IL",rep:"Alexis Rodriguez",date:"3/12/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"South Skokie, IL",rep:"Dayan Delgado",date:"3/12/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Valparaiso",rep:"",date:"3/12/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Burbank",rep:"Arturo Cahue",date:"3/12/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Burbank",rep:"Arturo Cahue",date:"3/12/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Burbank",rep:"Arturo Cahue",date:"3/12/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Valparaiso",rep:"",date:"3/12/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"XHS"},
+  {store:"Valparaiso",rep:"",date:"3/12/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Cicero",rep:"Sarah Penablanca",date:"3/12/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Valparaiso",rep:"",date:"3/12/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Glenview",rep:"Aedo Yonan",date:"3/13/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Glenview",rep:"Aedo Yonan",date:"3/13/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Cicero",rep:"Vanessa Cortez",date:"3/13/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Valparaiso",rep:"",date:"3/13/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Valparaiso",rep:"",date:"3/13/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Glenview",rep:"Aedo Yonan",date:"3/13/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Evergreen Park",rep:"",date:"3/13/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Schererville, IN",rep:"Brandon Smelko",date:"3/13/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Schererville, IN",rep:"Brandon Smelko",date:"3/13/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Bourbonnais",rep:"Nancy Trombley",date:"3/13/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Greeneville",rep:"Daniel Mitchell Jr.",date:"3/13/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Greeneville",rep:"Daniel Mitchell Jr.",date:"3/13/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Greeneville",rep:"Daniel Mitchell Jr.",date:"3/13/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Greeneville",rep:"Daniel Mitchell Jr.",date:"3/13/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"XHS"},
+  {store:"Schererville, IN",rep:"April Vasquez",date:"3/13/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Burbank",rep:"Christopher Coleman",date:"3/13/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Burbank",rep:"Christopher Coleman",date:"3/13/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Burbank",rep:"Christopher Coleman",date:"3/13/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Schererville, IN",rep:"April Vasquez",date:"3/13/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Schererville, IN",rep:"April Vasquez",date:"3/13/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Greeneville",rep:"Dalton Arwodd",date:"3/13/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Burbank",rep:"Jalen Logan",date:"3/13/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Burbank",rep:"Jalen Logan",date:"3/13/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"CDV"},
+  {store:"Burbank",rep:"Jacqueline Benitez",date:"3/13/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Burbank",rep:"Jacqueline Benitez",date:"3/13/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Burbank",rep:"Jalen Logan",date:"3/13/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Valparaiso",rep:"Emari Washington",date:"3/14/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Valparaiso",rep:"Anthony Suleski",date:"3/14/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Valparaiso",rep:"Anthony Suleski",date:"3/14/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Valparaiso",rep:"Anthony Suleski",date:"3/14/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Valparaiso",rep:"Anthony Suleski",date:"3/14/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"XHS"},
+  {store:"Michigan City",rep:"Daniel Carreno",date:"3/14/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Evergreen Park",rep:"Juan Carrillo",date:"3/14/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Evergreen Park",rep:"Juan Carrillo",date:"3/14/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Michigan City",rep:"Daniel Carreno",date:"3/14/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Michigan City",rep:"Daniel Carreno",date:"3/14/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"South Bend, IN",rep:"Jorge Tafoya",date:"3/14/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Elkhart",rep:"Emanuel Soto-Moreno",date:"3/14/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"HSI"},
+  {store:"Evergreen Park",rep:"Marshawn Skyes",date:"3/14/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Evergreen Park",rep:"",date:"3/14/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"South Bend, IN",rep:"Juan Padilla",date:"3/14/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Burbank",rep:"Arturo Cahue",date:"3/14/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"South Bend, IN",rep:"Juan Padilla",date:"3/14/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"South Bend, IN",rep:"Juan Padilla",date:"3/14/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"South Bend, IN",rep:"Juan Padilla",date:"3/14/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"South Bend, IN",rep:"Juan Padilla",date:"3/14/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"South Bend, IN",rep:"Juan Padilla",date:"3/14/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Kildeer",rep:"Matthew Rodriguez",date:"3/14/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"South Bend, IN",rep:"Juan Padilla",date:"3/14/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"South Bend, IN",rep:"Juan Padilla",date:"3/14/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"South Bend, IN",rep:"Juan Padilla",date:"3/14/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Burbank",rep:"Arturo Cahue",date:"3/14/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Frankfort",rep:"Aiden Bolhuis",date:"3/14/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Schererville, IN",rep:"Victoria Moore",date:"3/14/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Schererville, IN",rep:"Victoria Moore",date:"3/14/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Bourbonnais",rep:"Anthony Ray",date:"3/14/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Cicero",rep:"Jessica Al-Ali",date:"3/14/26",type:"Comp Plan Requirement",subType:"Customer disconnected more than twice",lob:"XFM"},
+  {store:"Cicero",rep:"Jessica Al-Ali",date:"3/14/26",type:"Comp Plan Requirement",subType:"Customer disconnected more than twice",lob:"HSI"},
+  {store:"Burbank",rep:"Jalen Logan",date:"3/14/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Glenview",rep:"Aedo Yonan",date:"3/14/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Tinley Park",rep:"Darionne Townsend",date:"3/14/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Greeneville",rep:"Dalton Arwodd",date:"3/14/26",type:"Comp Plan Requirement",subType:"Customer disconnected more than twice",lob:"XFM"},
+  {store:"Oak Ridge",rep:"Jacori Wimes",date:"3/14/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"HSI"},
+  {store:"Oak Ridge",rep:"Jacori Wimes",date:"3/14/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"South Knoxville",rep:"Demarcus McKamey",date:"3/14/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"South Knoxville",rep:"Demarcus McKamey",date:"3/14/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"South Knoxville",rep:"Demarcus McKamey",date:"3/14/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Oak Ridge",rep:"Jacori Wimes",date:"3/14/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Oak Ridge",rep:"Jacori Wimes",date:"3/14/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Frankfort",rep:"Noah Cleveland",date:"3/15/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Tinley Park",rep:"Emily Guzman",date:"3/15/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Valparaiso",rep:"Nathaniel Brogdon",date:"3/15/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Tinley Park",rep:"Emily Guzman",date:"3/15/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Frankfort",rep:"Noah Cleveland",date:"3/15/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Oak Ridge",rep:"Thomas Ingram",date:"3/15/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"XHS"},
+  {store:"Oak Ridge",rep:"Thomas Ingram",date:"3/15/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Oak Ridge",rep:"Thomas Ingram",date:"3/15/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Oak Ridge",rep:"Thomas Ingram",date:"3/15/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Frankfort",rep:"Noah Cleveland",date:"3/15/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Cicero",rep:"Sarah Penablanca",date:"3/15/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Cicero",rep:"Sarah Penablanca",date:"3/15/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Cicero",rep:"Sarah Penablanca",date:"3/15/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Burbank",rep:"Jacqueline Benitez",date:"3/15/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Burbank",rep:"Jacqueline Benitez",date:"3/15/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Burbank",rep:"Jacqueline Benitez",date:"3/15/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"South Bend, IN",rep:"Juan Padilla",date:"3/15/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Burbank",rep:"Antonio Carradine",date:"3/15/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Burbank",rep:"Antonio Carradine",date:"3/15/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Burbank",rep:"Antonio Carradine",date:"3/15/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Evergreen Park",rep:"Wend Cerda Bacilio",date:"3/15/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Frankfort",rep:"Noah Cleveland",date:"3/15/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Bourbonnais",rep:"Louis Yiakos",date:"3/15/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Frankfort",rep:"Noah Cleveland",date:"3/15/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Frankfort",rep:"Noah Cleveland",date:"3/15/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Frankfort",rep:"Noah Cleveland",date:"3/15/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Frankfort",rep:"Noah Cleveland",date:"3/15/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Frankfort",rep:"Noah Cleveland",date:"3/15/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Cicero",rep:"Angel Torres",date:"3/16/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Cicero",rep:"Angel Torres",date:"3/16/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Cicero",rep:"Angel Torres",date:"3/16/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Bourbonnais",rep:"Nancy Trombley",date:"3/16/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Hammond Mills",rep:"Donae Jones",date:"3/16/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Bourbonnais",rep:"Nancy Trombley",date:"3/16/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Oak Ridge",rep:"Stefan Murrell-Onley",date:"3/16/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"HSI"},
+  {store:"Bourbonnais",rep:"Nancy Trombley",date:"3/16/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Oak Ridge",rep:"Stefan Murrell-Onley",date:"3/16/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"Video"},
+  {store:"Oak Ridge",rep:"Stefan Murrell-Onley",date:"3/16/26",type:"Comp Plan Requirement",subType:"Customer disconnected more than twice",lob:"XHS"},
+  {store:"Round Lake Beach",rep:"Isabel Betancourt",date:"3/16/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Hammond Mills",rep:"Jeremiah Watson",date:"3/16/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"HSI"},
+  {store:"Bourbonnais",rep:"Kiara Jackson",date:"3/16/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Bourbonnais",rep:"Kiara Jackson",date:"3/16/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Bourbonnais",rep:"Kiara Jackson",date:"3/16/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Schererville, IN",rep:"Brandon Smelko",date:"3/16/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Schererville, IN",rep:"Brandon Smelko",date:"3/16/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Round Lake Beach",rep:"Isabel Betancourt",date:"3/16/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Greeneville",rep:"Angela Hahn",date:"3/16/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Greeneville",rep:"Angela Hahn",date:"3/16/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Greeneville",rep:"Angela Hahn",date:"3/16/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Greeneville",rep:"Angela Hahn",date:"3/16/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"XHS"},
+  {store:"Round Lake Beach",rep:"Isabel Betancourt",date:"3/16/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Michigan City",rep:"Keegan Canada",date:"3/16/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Evergreen Park",rep:"Kamar Thomas",date:"3/16/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Evergreen Park",rep:"Kamar Thomas",date:"3/16/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Evergreen Park",rep:"Kamar Thomas",date:"3/16/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Evergreen Park",rep:"Kamar Thomas",date:"3/16/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"XHS"},
+  {store:"Evergreen Park",rep:"Juan Carrillo",date:"3/16/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/17/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Kildeer",rep:"Jose Gomez",date:"3/17/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Evergreen Park",rep:"Aaron Hall",date:"3/17/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Evergreen Park",rep:"Aaron Hall",date:"3/17/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/17/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Frankfort",rep:"Austen Gast",date:"3/17/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Evergreen Park",rep:"Omar Bustamante",date:"3/17/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Evergreen Park",rep:"Kamar Thomas",date:"3/17/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Evergreen Park",rep:"Kamar Thomas",date:"3/17/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Evergreen Park",rep:"",date:"3/17/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Hammond Mills",rep:"Jeremiah Watson",date:"3/17/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"XHS"},
+  {store:"Hammond Mills",rep:"Jeremiah Watson",date:"3/17/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Hammond Mills",rep:"Jeremiah Watson",date:"3/17/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Oak Ridge",rep:"Jacori Wimes",date:"3/17/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"HSI"},
+  {store:"Hammond Mills",rep:"Jeremiah Watson",date:"3/17/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Evergreen Park",rep:"Adrian Bustamante",date:"3/17/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Burbank",rep:"Jacqueline Benitez",date:"3/17/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Burbank",rep:"Jacqueline Benitez",date:"3/17/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Burbank",rep:"Jacqueline Benitez",date:"3/17/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Cicero",rep:"Jessica Al-Ali",date:"3/17/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Evergreen Park",rep:"",date:"3/17/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Oak Ridge",rep:"Zoe Spradling",date:"3/18/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Frankfort",rep:"Noah Cleveland",date:"3/18/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Evergreen Park",rep:"Vivian Avila",date:"3/18/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Evanston",rep:"Jamal Lomax",date:"3/18/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Oak Ridge",rep:"Zoe Spradling",date:"3/18/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"XHS"},
+  {store:"Evanston",rep:"Jamal Lomax",date:"3/18/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Evanston",rep:"Jamal Lomax",date:"3/18/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Kildeer",rep:"Kenisha Banks",date:"3/18/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Oak Ridge",rep:"Zoe Spradling",date:"3/18/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Oak Ridge",rep:"Zoe Spradling",date:"3/18/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Hammond Mills",rep:"Reina Salgado",date:"3/18/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Hammond Mills",rep:"Reina Salgado",date:"3/18/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Hammond Mills",rep:"Reina Salgado",date:"3/18/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Frankfort",rep:"Erick Smith",date:"3/18/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Cicero",rep:"Francisco Salazar",date:"3/18/26",type:"Comp Plan Requirement",subType:"No Camera Sold With Order",lob:"XHS"},
+  {store:"Cicero",rep:"Francisco Salazar",date:"3/18/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Burbank",rep:"Arturo Cahue",date:"3/18/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"South Knoxville",rep:"Kayla Kirkland",date:"3/18/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"South Knoxville",rep:"Demarcus McKamey",date:"3/18/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"HSI"},
+  {store:"Burbank",rep:"Arturo Cahue",date:"3/18/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Evergreen Park",rep:"Kamar Thomas",date:"3/18/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Burbank",rep:"Arturo Cahue",date:"3/18/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Evergreen Park",rep:"Kamar Thomas",date:"3/18/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Evergreen Park",rep:"Kamar Thomas",date:"3/18/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Burbank",rep:"Arturo Cahue",date:"3/18/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Kildeer",rep:"Kenisha Banks",date:"3/18/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Kildeer",rep:"Kenisha Banks",date:"3/18/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"XHS"},
+  {store:"Evergreen Park",rep:"Kamar Thomas",date:"3/18/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Evergreen Park",rep:"Kamar Thomas",date:"3/18/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Evergreen Park",rep:"Kamar Thomas",date:"3/18/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"XHS"},
+  {store:"Valparaiso",rep:"Anthony Evans",date:"3/18/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Kildeer",rep:"Kenisha Banks",date:"3/18/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Evergreen Park",rep:"Kamar Thomas",date:"3/18/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Evergreen Park",rep:"Kamar Thomas",date:"3/18/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Oak Ridge",rep:"Sara Agle",date:"3/18/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Evergreen Park",rep:"Vivian Avila",date:"3/18/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Hammond Mills",rep:"Darryl Charles",date:"3/18/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Frankfort",rep:"Erick Smith",date:"3/18/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Elkhart",rep:"Emanuel Soto-Moreno",date:"3/18/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"South Bend, IN",rep:"Jose Maldonado",date:"3/18/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"South Bend, IN",rep:"Jose Maldonado",date:"3/18/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"South Bend, IN",rep:"Jose Maldonado",date:"3/18/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Hammond Mills",rep:"Darryl Charles",date:"3/18/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Hammond Mills",rep:"Darryl Charles",date:"3/18/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Evergreen Park",rep:"Vivian Avila",date:"3/18/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Evergreen Park",rep:"Vivian Avila",date:"3/18/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Kildeer",rep:"Kenisha Banks",date:"3/18/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Evergreen Park",rep:"Adrian Bustamante",date:"3/18/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Evergreen Park",rep:"Adrian Bustamante",date:"3/18/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Kildeer",rep:"Kenisha Banks",date:"3/18/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"XHS"},
+  {store:"Valparaiso",rep:"Anthony Evans",date:"3/18/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Glenview",rep:"Aedo Yonan",date:"3/18/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Kildeer",rep:"Kenisha Banks",date:"3/18/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Kildeer",rep:"Kenisha Banks",date:"3/18/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Valparaiso",rep:"Shamika Austin",date:"3/18/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Valparaiso",rep:"Anthony Evans",date:"3/18/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Schererville, IN",rep:"Victoria Moore",date:"3/19/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Evanston",rep:"Jamal Lomax",date:"3/19/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Schererville, IN",rep:"Victoria Moore",date:"3/19/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Schererville, IN",rep:"Brandon Smelko",date:"3/19/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Evergreen Park",rep:"Jesus Romo",date:"3/19/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Evergreen Park",rep:"Jesus Romo",date:"3/19/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Uptown",rep:"Hunter Dodge",date:"3/19/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Evergreen Park",rep:"Jesus Romo",date:"3/19/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Evergreen Park",rep:"Kamar Thomas",date:"3/19/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Bourbonnais",rep:"Nancy Trombley",date:"3/19/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Bourbonnais",rep:"Nancy Trombley",date:"3/19/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"CDV"},
+  {store:"Bourbonnais",rep:"Pierre Henderson",date:"3/19/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Cicero",rep:"Jessica Al-Ali",date:"3/19/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"HSI"},
+  {store:"Burbank",rep:"Jacqueline Benitez",date:"3/19/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Burbank",rep:"Jacqueline Benitez",date:"3/19/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Burbank",rep:"Jacqueline Benitez",date:"3/19/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Evergreen Park",rep:"Kamar Thomas",date:"3/19/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Evergreen Park",rep:"Jesus Romo",date:"3/19/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Burbank",rep:"Arturo Cahue",date:"3/19/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Burbank",rep:"Arturo Cahue",date:"3/19/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Burbank",rep:"Arturo Cahue",date:"3/19/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"XHS"},
+  {store:"Burbank",rep:"Arturo Cahue",date:"3/19/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Frankfort",rep:"Erick Smith",date:"3/19/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Evergreen Park",rep:"Adrian Bustamante",date:"3/20/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Johnson City, TN",rep:"Justin Wyatt",date:"3/20/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Johnson City, TN",rep:"Justin Wyatt",date:"3/20/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Greeneville",rep:"Daniel Mitchell Jr.",date:"3/20/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Burbank",rep:"Jalen Logan",date:"3/20/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Tinley Park",rep:"Emily Guzman",date:"3/20/26",type:"Comp Plan Requirement",subType:"Cancel Rekey",lob:"Video"},
+  {store:"Michigan City",rep:"",date:"3/20/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Hammond Mills",rep:"Donae Jones",date:"3/20/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Kildeer",rep:"Kenisha Banks",date:"3/20/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Tinley Park",rep:"Emily Guzman",date:"3/20/26",type:"Comp Plan Requirement",subType:"Cancel Rekey",lob:"Other"},
+  {store:"Evanston",rep:"Jamal Lomax",date:"3/20/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Schererville, IN",rep:"April Vasquez",date:"3/20/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Bourbonnais",rep:"Anthony Ray",date:"3/20/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Cicero",rep:"Sarah Penablanca",date:"3/20/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Burbank",rep:"Christopher Coleman",date:"3/20/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Burbank",rep:"Christopher Coleman",date:"3/20/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Evanston",rep:"Jamal Lomax",date:"3/20/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"DeKalb",rep:"Brandon Trullinger",date:"3/20/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"HSI"},
+  {store:"Bourbonnais",rep:"Anthony Ray",date:"3/20/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"South Skokie, IL",rep:"Alexis Rodriguez",date:"3/21/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"HSI"},
+  {store:"Frankfort",rep:"Aiden Bolhuis",date:"3/21/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Evergreen Park",rep:"Juan Carrillo",date:"3/21/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Evergreen Park",rep:"Juan Carrillo",date:"3/21/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Evanston",rep:"Gavin Williams",date:"3/21/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Evanston",rep:"Gavin Williams",date:"3/21/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Frankfort",rep:"Aiden Bolhuis",date:"3/21/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Frankfort",rep:"Aiden Bolhuis",date:"3/21/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Burbank",rep:"Christopher Coleman",date:"3/21/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Valparaiso",rep:"Malyn Anderson",date:"3/21/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"XHS"},
+  {store:"Cicero",rep:"Francisco Salazar",date:"3/21/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Cicero",rep:"Francisco Salazar",date:"3/21/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Cicero",rep:"Francisco Salazar",date:"3/21/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Tinley Park",rep:"Darionne Townsend",date:"3/21/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Tinley Park",rep:"Darionne Townsend",date:"3/21/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Tinley Park",rep:"Darionne Townsend",date:"3/21/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Greeneville",rep:"Daniel Mitchell Jr.",date:"3/21/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Greeneville",rep:"Daniel Mitchell Jr.",date:"3/21/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Greeneville",rep:"Daniel Mitchell Jr.",date:"3/21/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Evergreen Park",rep:"Kamar Thomas",date:"3/21/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Schererville, IN",rep:"Michael Jackson",date:"3/21/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Evergreen Park",rep:"Juan Carrillo",date:"3/21/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Schererville, IN",rep:"April Vasquez",date:"3/21/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Schererville, IN",rep:"April Vasquez",date:"3/21/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Schererville, IN",rep:"April Vasquez",date:"3/21/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"South Skokie, IL",rep:"Dayan Delgado",date:"3/21/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"South Skokie, IL",rep:"Dayan Delgado",date:"3/21/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Evergreen Park",rep:"Juan Carrillo",date:"3/21/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"South Skokie, IL",rep:"Dayan Delgado",date:"3/21/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Schererville, IN",rep:"Darnisha Brown",date:"3/21/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Valparaiso",rep:"Anthony Evans",date:"3/21/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Valparaiso",rep:"Anthony Evans",date:"3/21/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"South Skokie, IL",rep:"Alexis Rodriguez",date:"3/21/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"South Skokie, IL",rep:"Alexis Rodriguez",date:"3/21/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Schererville, IN",rep:"Darnisha Brown",date:"3/21/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Schererville, IN",rep:"Darnisha Brown",date:"3/21/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Burbank",rep:"Jacqueline Benitez",date:"3/22/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Burbank",rep:"Jacqueline Benitez",date:"3/22/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Burbank",rep:"Jacqueline Benitez",date:"3/22/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Tinley Park",rep:"Emily Guzman",date:"3/22/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Tinley Park",rep:"Emily Guzman",date:"3/22/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Tinley Park",rep:"Emily Guzman",date:"3/22/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Johnson City, TN",rep:"Raymond Johnson",date:"3/22/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Valparaiso",rep:"Anthony Evans",date:"3/22/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Greeneville",rep:"Daniel Mitchell Jr.",date:"3/22/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Bourbonnais",rep:"Louis Yiakos",date:"3/22/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Bourbonnais",rep:"Louis Yiakos",date:"3/22/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"South Skokie, IL",rep:"Shah Syed",date:"3/22/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Valparaiso",rep:"Anthony Evans",date:"3/22/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Cicero",rep:"",date:"3/22/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Cicero",rep:"",date:"3/22/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Johnson City, TN",rep:"Raymond Johnson",date:"3/22/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Tinley Park",rep:"Emily Guzman",date:"3/22/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"XHS"},
+  {store:"Cicero",rep:"Angel Torres",date:"3/22/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Glenview",rep:"Linda Weeks",date:"3/22/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Cicero",rep:"Angel Torres",date:"3/22/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Cicero",rep:"Angel Torres",date:"3/22/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"South Bend, IN",rep:"Juan Padilla",date:"3/22/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Evanston",rep:"Anaf Rahman",date:"3/22/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Frankfort",rep:"Noah Cleveland",date:"3/22/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"South Bend, IN",rep:"Juan Padilla",date:"3/22/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"South Bend, IN",rep:"Juan Padilla",date:"3/22/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"South Bend, IN",rep:"Juan Padilla",date:"3/22/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"South Skokie, IL",rep:"Dayan Delgado",date:"3/23/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Evergreen Park",rep:"Juan Carrillo",date:"3/23/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Round Lake Beach",rep:"Isabel Betancourt",date:"3/23/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Round Lake Beach",rep:"Isabel Betancourt",date:"3/23/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Round Lake Beach",rep:"Isabel Betancourt",date:"3/23/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Burbank",rep:"Jalen Logan",date:"3/23/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Evergreen Park",rep:"",date:"3/23/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Evergreen Park",rep:"",date:"3/23/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Evergreen Park",rep:"",date:"3/23/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Evergreen Park",rep:"",date:"3/23/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"XHS"},
+  {store:"Evergreen Park",rep:"Juan Carrillo",date:"3/23/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Evergreen Park",rep:"Juan Carrillo",date:"3/23/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Evergreen Park",rep:"Juan Carrillo",date:"3/23/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Evergreen Park",rep:"Juan Carrillo",date:"3/23/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Bourbonnais",rep:"Jose Quintanilla",date:"3/23/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"XHS"},
+  {store:"Johnson City, TN",rep:"Tyler Carr",date:"3/23/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Schererville, IN",rep:"Victoria Moore",date:"3/23/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Greeneville",rep:"Dalton Fox",date:"3/23/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Michigan City",rep:"Collin Crooks",date:"3/23/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Michigan City",rep:"Collin Crooks",date:"3/23/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Valparaiso",rep:"Denzel Brent",date:"3/23/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Michigan City",rep:"Collin Crooks",date:"3/23/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Bourbonnais",rep:"Jose Quintanilla",date:"3/23/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Bourbonnais",rep:"Jose Quintanilla",date:"3/23/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Bourbonnais",rep:"Jose Quintanilla",date:"3/23/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Bourbonnais",rep:"Jose Quintanilla",date:"3/23/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Bourbonnais",rep:"Jose Quintanilla",date:"3/23/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Greeneville",rep:"Joshua Huerto",date:"3/23/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"Video"},
+  {store:"Bourbonnais",rep:"Nancy Trombley",date:"3/23/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Johnson City, TN",rep:"Tre\'vonn Fields",date:"3/23/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Greeneville",rep:"Dalton Arwodd",date:"3/23/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Frankfort",rep:"Aiden Bolhuis",date:"3/23/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Evergreen Park",rep:"Omar Bustamante",date:"3/23/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Evanston",rep:"Gavin Williams",date:"3/23/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Evanston",rep:"Gavin Williams",date:"3/23/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"HSI"},
+  {store:"Round Lake Beach",rep:"Isabel Betancourt",date:"3/23/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Round Lake Beach",rep:"Isabel Betancourt",date:"3/23/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Round Lake Beach",rep:"Isabel Betancourt",date:"3/23/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Tinley Park",rep:"Darionne Townsend",date:"3/24/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Greeneville",rep:"Nicholes Gilland",date:"3/24/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"HSI"},
+  {store:"Tinley Park",rep:"Darionne Townsend",date:"3/24/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Johnson City, TN",rep:"Justin Wyatt",date:"3/24/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"HSI"},
+  {store:"Valparaiso",rep:"Anthony Evans",date:"3/24/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Valparaiso",rep:"Anthony Evans",date:"3/24/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Valparaiso",rep:"Anthony Evans",date:"3/24/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Johnson City, TN",rep:"Justin Wyatt",date:"3/24/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"Video"},
+  {store:"Johnson City, TN",rep:"Justin Wyatt",date:"3/24/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"Other"},
+  {store:"Michigan City",rep:"Linda Zoliner",date:"3/24/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Valparaiso",rep:"Anthony Evans",date:"3/24/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"XHS"},
+  {store:"Evanston",rep:"Jamal Lomax",date:"3/24/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"HSI"},
+  {store:"Evanston",rep:"Jamal Lomax",date:"3/24/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Round Lake Beach",rep:"Isabel Betancourt",date:"3/24/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Round Lake Beach",rep:"Isabel Betancourt",date:"3/24/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Round Lake Beach",rep:"Isabel Betancourt",date:"3/24/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Evergreen Park",rep:"Vivian Avila",date:"3/24/26",type:"Risk Assurance",subType:"",lob:"CDV"},
+  {store:"Evergreen Park",rep:"Vivian Avila",date:"3/24/26",type:"Risk Assurance",subType:"",lob:"HSI"},
+  {store:"Evergreen Park",rep:"Vivian Avila",date:"3/24/26",type:"Risk Assurance",subType:"",lob:"Other"},
+  {store:"Evergreen Park",rep:"Juan Carrillo",date:"3/24/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Bourbonnais",rep:"Nancy Trombley",date:"3/24/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Round Lake Beach",rep:"Isabel Betancourt",date:"3/24/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Frankfort",rep:"Erick Smith",date:"3/25/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Tinley Park",rep:"Darionne Townsend",date:"3/25/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Evergreen Park",rep:"Marshawn Skyes",date:"3/25/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Evergreen Park",rep:"Marshawn Skyes",date:"3/25/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Elkhart",rep:"Killian Thaxton",date:"3/25/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Elkhart",rep:"Katelynn Heltzel",date:"3/25/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Schererville, IN",rep:"Michael Jackson",date:"3/25/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Round Lake Beach",rep:"Isabel Betancourt",date:"3/25/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Schererville, IN",rep:"Michael Jackson",date:"3/25/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"DeKalb",rep:"Dashawn Dean",date:"3/25/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"DeKalb",rep:"Dashawn Dean",date:"3/25/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"DeKalb",rep:"Dashawn Dean",date:"3/25/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Kildeer",rep:"Kenisha Banks",date:"3/25/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"HSI"},
+  {store:"Burbank",rep:"Christopher Coleman",date:"3/25/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Bourbonnais",rep:"Louis Yiakos",date:"3/25/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Bourbonnais",rep:"Louis Yiakos",date:"3/25/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Bourbonnais",rep:"Louis Yiakos",date:"3/25/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Round Lake Beach",rep:"Isabel Betancourt",date:"3/25/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Schererville, IN",rep:"April Vasquez",date:"3/25/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Schererville, IN",rep:"Brandon Smelko",date:"3/25/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"South Skokie, IL",rep:"Steev Qaryo",date:"3/25/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Glenview",rep:"Tanzim Chowdhury",date:"3/25/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Kildeer",rep:"Kenisha Banks",date:"3/25/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Cicero",rep:"Sarah Penablanca",date:"3/25/26",type:"Comp Plan Requirement",subType:"No Camera Sold With Order",lob:"XHS"},
+  {store:"Bourbonnais",rep:"Louis Yiakos",date:"3/25/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Bourbonnais",rep:"Jose Quintanilla",date:"3/26/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Bourbonnais",rep:"Anthony Ray",date:"3/26/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Bourbonnais",rep:"Jose Quintanilla",date:"3/26/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Bourbonnais",rep:"Jose Quintanilla",date:"3/26/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Bourbonnais",rep:"Pierre Henderson",date:"3/26/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"Other"},
+  {store:"Bourbonnais",rep:"Pierre Henderson",date:"3/26/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"Video"},
+  {store:"Bourbonnais",rep:"Anthony Ray",date:"3/26/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Johnson City, TN",rep:"Tre\'vonn Fields",date:"3/26/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Bourbonnais",rep:"Pierre Henderson",date:"3/26/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"HSI"},
+  {store:"Evergreen Park",rep:"Vivian Avila",date:"3/26/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"XHS"},
+  {store:"Uptown",rep:"Hunter Dodge",date:"3/26/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Tinley Park",rep:"Emily Guzman",date:"3/26/26",type:"Comp Plan Requirement",subType:"XFM - Same Day Disconnect",lob:"XFM"},
+  {store:"Burbank",rep:"Jacqueline Benitez",date:"3/26/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Burbank",rep:"Jacqueline Benitez",date:"3/26/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Burbank",rep:"Jacqueline Benitez",date:"3/26/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Elkhart",rep:"Josue Salazar",date:"3/26/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Schererville, IN",rep:"Michael Jackson",date:"3/26/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Michigan City",rep:"Keegan Canada",date:"3/26/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Michigan City",rep:"Linda Zoliner",date:"3/26/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Schererville, IN",rep:"Michael Jackson",date:"3/26/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Schererville, IN",rep:"Michael Jackson",date:"3/26/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Evergreen Park",rep:"Omar Bustamante",date:"3/27/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Round Lake Beach",rep:"Isabel Betancourt",date:"3/27/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Video"},
+  {store:"Evergreen Park",rep:"Omar Bustamante",date:"3/27/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Round Lake Beach",rep:"Isabel Betancourt",date:"3/27/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Elkhart",rep:"Emanuel Soto-Moreno",date:"3/27/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"HSI"},
+  {store:"Round Lake Beach",rep:"Isabel Betancourt",date:"3/27/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Burbank",rep:"Jacqueline Benitez",date:"3/27/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Cicero",rep:"Sarah Penablanca",date:"3/27/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Schererville, IN",rep:"April Vasquez",date:"3/27/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Schererville, IN",rep:"April Vasquez",date:"3/27/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Cicero",rep:"Julia Ariza",date:"3/27/26",type:"Risk Assurance",subType:"",lob:"HSI"},
+  {store:"Michigan City",rep:"Keegan Canada",date:"3/27/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"DeKalb",rep:"Caleb Green",date:"3/27/26",type:"Risk Assurance",subType:"",lob:"HSI"},
+  {store:"DeKalb",rep:"Caleb Green",date:"3/27/26",type:"Risk Assurance",subType:"",lob:"Other"},
+  {store:"DeKalb",rep:"Caleb Green",date:"3/27/26",type:"Risk Assurance",subType:"",lob:"Video"},
+  {store:"Michigan City",rep:"Keegan Canada",date:"3/27/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Michigan City",rep:"Keegan Canada",date:"3/27/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Evergreen Park",rep:"Kamar Thomas",date:"3/27/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Evergreen Park",rep:"Kamar Thomas",date:"3/27/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Evergreen Park",rep:"Kamar Thomas",date:"3/27/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"Video"},
+  {store:"Evergreen Park",rep:"Kamar Thomas",date:"3/27/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"Other"},
+  {store:"Evergreen Park",rep:"Kamar Thomas",date:"3/27/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"HSI"},
+  {store:"Evergreen Park",rep:"Vivian Avila",date:"3/27/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Evergreen Park",rep:"Vivian Avila",date:"3/27/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Johnson City, TN",rep:"Richard Campbell",date:"3/27/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Oak Ridge",rep:"Zoe Spradling",date:"3/27/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"South Bend, IN",rep:"Salvador Rodriguez",date:"3/27/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Evergreen Park",rep:"Omar Bustamante",date:"3/27/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Bourbonnais",rep:"Nancy Trombley",date:"3/28/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Bourbonnais",rep:"Nancy Trombley",date:"3/28/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Evanston",rep:"Anaf Rahman",date:"3/28/26",type:"Comp Plan Requirement",subType:"Customer had service within 120 Days",lob:"HSI"},
+  {store:"Evergreen Park",rep:"Omar Bustamante",date:"3/28/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"South Bend, IN",rep:"Juan Padilla",date:"3/28/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"South Bend, IN",rep:"Juan Padilla",date:"3/28/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"CDV"},
+  {store:"South Bend, IN",rep:"Juan Padilla",date:"3/28/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Schererville, IN",rep:"April Vasquez",date:"3/28/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Evergreen Park",rep:"Omar Bustamante",date:"3/28/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Glenview",rep:"Tanzim Chowdhury",date:"3/28/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Evergreen Park",rep:"Kamar Thomas",date:"3/28/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Burbank",rep:"Arturo Cahue",date:"3/28/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Schererville, IN",rep:"April Vasquez",date:"3/28/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Video"},
+  {store:"Schererville, IN",rep:"April Vasquez",date:"3/28/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Burbank",rep:"Arturo Cahue",date:"3/28/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Evergreen Park",rep:"Vivian Avila",date:"3/28/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Evergreen Park",rep:"Vivian Avila",date:"3/28/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Evergreen Park",rep:"Kamar Thomas",date:"3/28/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Evergreen Park",rep:"Kamar Thomas",date:"3/28/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"XHS"},
+  {store:"Schererville, IN",rep:"April Vasquez",date:"3/28/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Glenview",rep:"Aedo Yonan",date:"3/28/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Glenview",rep:"Linda Weeks",date:"3/28/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Glenview",rep:"Linda Weeks",date:"3/28/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"South Bend, IN",rep:"Juan Padilla",date:"3/28/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Evergreen Park",rep:"Kamar Thomas",date:"3/28/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Cicero",rep:"Jessica Al-Ali",date:"3/28/26",type:"Comp Plan Requirement",subType:"No Camera Sold With Order",lob:"XHS"},
+  {store:"Burbank",rep:"Arturo Cahue",date:"3/28/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Burbank",rep:"Arturo Cahue",date:"3/28/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"Other"},
+  {store:"Johnson City, TN",rep:"Raymond Johnson",date:"3/29/26",type:"Comp Plan Requirement",subType:"Insufficient Revenue Lift",lob:"HSI"},
+  {store:"Schererville, IN",rep:"April Vasquez",date:"3/29/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Bourbonnais",rep:"Nancy Trombley",date:"3/29/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Bourbonnais",rep:"Nancy Trombley",date:"3/29/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"Other"},
+  {store:"Schererville, IN",rep:"April Vasquez",date:"3/29/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Schererville, IN",rep:"April Vasquez",date:"3/29/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Schererville, IN",rep:"April Vasquez",date:"3/29/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"},
+  {store:"Schererville, IN",rep:"April Vasquez",date:"3/29/26",type:"Comp Plan Requirement",subType:"Fails 3-Day Rule",lob:"HSI"}
+];
+
+const CANCEL_DATA = [
+  {store:"Bourbonnais",rep:"",orderDate:"7/21/24",cancelDate:"12/10/25",reason:"OLD PENDG CNCL"},
+  {store:"Evanston",rep:"",orderDate:"7/27/24",cancelDate:"12/10/25",reason:"OLD PENDG CNCL"},
+  {store:"Tinley Park",rep:"",orderDate:"8/14/24",cancelDate:"12/10/25",reason:"OLD PENDG CNCL"},
+  {store:"Elkhart",rep:"",orderDate:"9/22/24",cancelDate:"12/10/25",reason:"OLD PENDG CNCL"},
+  {store:"Elkhart",rep:"",orderDate:"9/24/24",cancelDate:"12/10/25",reason:"OLD PENDG CNCL"},
+  {store:"Valparaiso",rep:"",orderDate:"11/25/24",cancelDate:"12/10/25",reason:"OLD PENDG CNCL"},
+  {store:"Elkhart",rep:"",orderDate:"11/29/24",cancelDate:"12/10/25",reason:"OLD PENDG CNCL"},
+  {store:"Greeneville",rep:"",orderDate:"2/27/25",cancelDate:"12/10/25",reason:"OLD PENDG CNCL"},
+  {store:"Valparaiso",rep:"",orderDate:"3/12/25",cancelDate:"12/10/25",reason:"OLD PENDG CNCL"},
+  {store:"Valparaiso",rep:"",orderDate:"6/1/25",cancelDate:"12/10/25",reason:"OLD PENDG CNCL"},
+  {store:"Valparaiso",rep:"",orderDate:"8/8/25",cancelDate:"12/10/25",reason:"OLD PENDG CNCL"},
+  {store:"Greeneville",rep:"Daniel Mitchell Jr.",orderDate:"8/13/25",cancelDate:"12/11/25",reason:"Unknown"},
+  {store:"South Knoxville",rep:"",orderDate:"8/13/25",cancelDate:"12/10/25",reason:"OLD PENDG CNCL"},
+  {store:"Greeneville",rep:"",orderDate:"8/22/25",cancelDate:"12/10/25",reason:"OLD PENDG CNCL"},
+  {store:"Oak Ridge",rep:"",orderDate:"10/14/25",cancelDate:"12/6/25",reason:"OLD PENDG CNCL"},
+  {store:"Oak Ridge",rep:"",orderDate:"10/17/25",cancelDate:"1/3/26",reason:"SMS"},
+  {store:"Greeneville",rep:"",orderDate:"10/20/25",cancelDate:"1/19/26",reason:"OLD PENDG CNCL"},
+  {store:"Oak Ridge",rep:"",orderDate:"10/24/25",cancelDate:"1/22/26",reason:"CUSTOMER CHOICE"},
+  {store:"South Knoxville",rep:"Sara Agle",orderDate:"10/29/25",cancelDate:"12/8/25",reason:"CUSTOMER CHOICE"},
+  {store:"Schererville, IN",rep:"Collin Crooks",orderDate:"11/1/25",cancelDate:"11/28/25",reason:"Unknown"},
+  {store:"Greeneville",rep:"",orderDate:"11/1/25",cancelDate:"11/29/25",reason:"CUST REFUSED"},
+  {store:"Bourbonnais",rep:"",orderDate:"11/3/25",cancelDate:"12/4/25",reason:"OLD PENDG CNCL"},
+  {store:"Oak Ridge",rep:"",orderDate:"11/12/25",cancelDate:"12/3/25",reason:"HOT DROP"},
+  {store:"Elkhart",rep:"",orderDate:"11/13/25",cancelDate:"12/1/25",reason:"Unknown"},
+  {store:"Frankfort",rep:"",orderDate:"11/18/25",cancelDate:"12/17/25",reason:"OLD PENDG CNCL"},
+  {store:"Greeneville",rep:"Dalton Arwodd",orderDate:"11/18/25",cancelDate:"12/2/25",reason:"COMPETITION"},
+  {store:"South Knoxville",rep:"Demarcus McKamey",orderDate:"11/26/25",cancelDate:"11/30/25",reason:"DFLT CONVERSION"},
+  {store:"Cicero",rep:"Cristofer Loredo",orderDate:"11/28/25",cancelDate:"11/28/25",reason:"PRICE"},
+  {store:"Glenview",rep:"",orderDate:"11/28/25",cancelDate:"11/28/25",reason:"Unknown"},
+  {store:"Glenview",rep:"",orderDate:"11/28/25",cancelDate:"11/29/25",reason:"CREDIT DENIED"},
+  {store:"Oak Ridge",rep:"",orderDate:"11/30/25",cancelDate:"1/18/26",reason:"Unknown"},
+  {store:"Cicero",rep:"",orderDate:"11/30/25",cancelDate:"11/30/25",reason:"CANCEL @CHECKIN"},
+  {store:"Bourbonnais",rep:"",orderDate:"12/1/25",cancelDate:"3/3/26",reason:"Unknown"},
+  {store:"Tinley Park",rep:"",orderDate:"12/2/25",cancelDate:"12/2/25",reason:"CUST REFUSED"},
+  {store:"Valparaiso",rep:"Emari Washington",orderDate:"12/2/25",cancelDate:"12/9/25",reason:"CUST REFUSED"},
+  {store:"Valparaiso",rep:"",orderDate:"12/3/25",cancelDate:"12/4/25",reason:"CUST REFUSED"},
+  {store:"Valparaiso",rep:"",orderDate:"12/3/25",cancelDate:"12/4/25",reason:"CUST REFUSED"},
+  {store:"Kildeer",rep:"",orderDate:"12/3/25",cancelDate:"12/17/25",reason:"Unknown"},
+  {store:"Elkhart",rep:"Alyissa Davis",orderDate:"12/4/25",cancelDate:"2/3/26",reason:"OLD PENDG CNCL"},
+  {store:"Kildeer",rep:"",orderDate:"12/5/25",cancelDate:"12/5/25",reason:"Unknown"},
+  {store:"Kildeer",rep:"",orderDate:"12/5/25",cancelDate:"2/18/26",reason:"OLD PENDG CNCL"},
+  {store:"Valparaiso",rep:"",orderDate:"12/5/25",cancelDate:"12/8/25",reason:"OLD PENDG CNCL"},
+  {store:"Hammond Mills",rep:"",orderDate:"12/6/25",cancelDate:"12/6/25",reason:"CUST REFUSED"},
+  {store:"Glenview",rep:"",orderDate:"12/6/25",cancelDate:"12/7/25",reason:"Unknown"},
+  {store:"Elkhart",rep:"",orderDate:"12/7/25",cancelDate:"12/8/25",reason:"CUST REFUSED"},
+  {store:"Tinley Park",rep:"Antonio Carradine",orderDate:"12/7/25",cancelDate:"12/8/25",reason:"Unknown"},
+  {store:"Evergreen Park",rep:"",orderDate:"12/8/25",cancelDate:"12/12/25",reason:"OFFICE CORRECTN"},
+  {store:"Evergreen Park",rep:"Kamar Thomas",orderDate:"12/8/25",cancelDate:"2/10/26",reason:"CANCEL @CHECKIN"},
+  {store:"Cicero",rep:"Cristofer Loredo",orderDate:"12/8/25",cancelDate:"12/8/25",reason:"CUST REFUSED"},
+  {store:"Hammond Mills",rep:"",orderDate:"12/9/25",cancelDate:"12/12/25",reason:"CUST REFUSED"},
+  {store:"Hammond Mills",rep:"",orderDate:"12/10/25",cancelDate:"12/12/25",reason:"CREDIT DENIED"},
+  {store:"Valparaiso",rep:"",orderDate:"12/10/25",cancelDate:"12/16/25",reason:"CUST REFUSED"},
+  {store:"Valparaiso",rep:"",orderDate:"12/11/25",cancelDate:"12/11/25",reason:"Unknown"},
+  {store:"Tinley Park",rep:"",orderDate:"12/11/25",cancelDate:"12/12/25",reason:"Unknown"},
+  {store:"Evergreen Park",rep:"Wend Cerda Bacilio",orderDate:"12/11/25",cancelDate:"3/12/26",reason:"OLD PENDG CNCL"},
+  {store:"Valparaiso",rep:"Emari Washington",orderDate:"12/13/25",cancelDate:"12/15/25",reason:"BAL OWED/DUE"},
+  {store:"Kildeer",rep:"Jose Gomez",orderDate:"12/13/25",cancelDate:"12/13/25",reason:"Unknown"},
+  {store:"Oak Ridge",rep:"Erika McFall",orderDate:"12/13/25",cancelDate:"12/13/25",reason:"Unknown"},
+  {store:"Cicero",rep:"",orderDate:"12/13/25",cancelDate:"12/14/25",reason:"CANCEL @CHECKIN"},
+  {store:"Evergreen Park",rep:"",orderDate:"12/14/25",cancelDate:"12/15/25",reason:"OFFICE CORRECTN"},
+  {store:"Hammond Mills",rep:"Reina Salgado",orderDate:"12/14/25",cancelDate:"1/24/26",reason:"OLD PENDG CNCL"},
+  {store:"Evergreen Park",rep:"Juan Carrillo",orderDate:"12/15/25",cancelDate:"12/31/25",reason:"OFFICE CORRECTN"},
+  {store:"Tinley Park",rep:"Destini Kelley",orderDate:"12/15/25",cancelDate:"12/19/25",reason:"NEVER ORDERED"},
+  {store:"Greeneville",rep:"Daniel Mitchell Jr.",orderDate:"12/15/25",cancelDate:"12/16/25",reason:"Unknown"},
+  {store:"Evanston",rep:"Gavin Williams",orderDate:"12/15/25",cancelDate:"1/7/26",reason:"Unknown"},
+  {store:"Cicero",rep:"Julia Ariza",orderDate:"12/16/25",cancelDate:"12/18/25",reason:"OFFICE CORRECTN"},
+  {store:"Valparaiso",rep:"",orderDate:"12/17/25",cancelDate:"12/17/25",reason:"OFFICE CORRECTN"},
+  {store:"Frankfort",rep:"Donae Jones",orderDate:"12/18/25",cancelDate:"12/22/25",reason:"COMPETITION"},
+  {store:"Evergreen Park",rep:"Vivian Avila",orderDate:"12/19/25",cancelDate:"1/26/26",reason:"OLD PENDG CNCL"},
+  {store:"Kildeer",rep:"",orderDate:"12/20/25",cancelDate:"1/30/26",reason:"Unknown"},
+  {store:"Cicero",rep:"Cristofer Loredo",orderDate:"12/22/25",cancelDate:"12/22/25",reason:"CANCEL @CHECKIN"},
+  {store:"Evergreen Park",rep:"Juan Carrillo",orderDate:"12/22/25",cancelDate:"1/7/26",reason:"Unknown"},
+  {store:"Tinley Park",rep:"Emily Guzman",orderDate:"12/22/25",cancelDate:"12/23/25",reason:"CONSENT DENIED"},
+  {store:"Oak Ridge",rep:"",orderDate:"12/22/25",cancelDate:"2/3/26",reason:"Unknown"},
+  {store:"Evanston",rep:"",orderDate:"12/23/25",cancelDate:"1/5/26",reason:"OFFICE CORRECTN"},
+  {store:"Uptown",rep:"",orderDate:"12/23/25",cancelDate:"12/24/25",reason:"Unknown"},
+  {store:"Oak Ridge",rep:"Erika McFall",orderDate:"12/23/25",cancelDate:"12/29/25",reason:"CUST REFUSED"},
+  {store:"Oak Ridge",rep:"",orderDate:"12/24/25",cancelDate:"1/3/26",reason:"Unknown"},
+  {store:"Greeneville",rep:"",orderDate:"12/26/25",cancelDate:"3/19/26",reason:"OLD PENDG CNCL"},
+  {store:"Schererville, IN",rep:"Michael Jackson",orderDate:"12/26/25",cancelDate:"12/28/25",reason:"CUST REFUSED"},
+  {store:"Uptown",rep:"",orderDate:"12/26/25",cancelDate:"1/14/26",reason:"OLD PENDG CNCL"},
+  {store:"Evergreen Park",rep:"Kamar Thomas",orderDate:"12/26/25",cancelDate:"12/30/25",reason:"ORDR ENTRY ERR"},
+  {store:"Frankfort",rep:"",orderDate:"12/26/25",cancelDate:"12/26/25",reason:"Unknown"},
+  {store:"Evergreen Park",rep:"Vivian Avila",orderDate:"12/26/25",cancelDate:"1/1/26",reason:"Unknown"},
+  {store:"Evergreen Park",rep:"Kamar Thomas",orderDate:"12/26/25",cancelDate:"1/3/26",reason:"CUST REFUSED"},
+  {store:"Evergreen Park",rep:"Vivian Avila",orderDate:"12/27/25",cancelDate:"1/3/26",reason:"CUST REFUSED"},
+  {store:"Cicero",rep:"Julia Ariza",orderDate:"12/29/25",cancelDate:"12/31/25",reason:"BAL OWED/DUE"},
+  {store:"Bourbonnais",rep:"",orderDate:"12/29/25",cancelDate:"12/29/25",reason:"Unknown"},
+  {store:"DeKalb",rep:"Dashawn Dean",orderDate:"12/30/25",cancelDate:"1/5/26",reason:"CUSTOMER CHOICE"},
+  {store:"Bourbonnais",rep:"",orderDate:"12/30/25",cancelDate:"1/14/26",reason:"OLD PENDG CNCL"},
+  {store:"Oak Ridge",rep:"Erika McFall",orderDate:"12/31/25",cancelDate:"1/8/26",reason:"OFFICE CORRECTN"},
+  {store:"Cicero",rep:"",orderDate:"1/1/26",cancelDate:"1/3/26",reason:"MY ACCOUNT APP"},
+  {store:"Evanston",rep:"",orderDate:"1/1/26",cancelDate:"1/2/26",reason:"AESTHETICS PROB"},
+  {store:"Evergreen Park",rep:"Adrian Bustamante",orderDate:"1/2/26",cancelDate:"1/2/26",reason:"Unknown"},
+  {store:"Oak Ridge",rep:"",orderDate:"1/2/26",cancelDate:"1/14/26",reason:"OFFICE CORRECTN"},
+  {store:"Valparaiso",rep:"",orderDate:"1/2/26",cancelDate:"1/9/26",reason:"CUST REFUSED"},
+  {store:"Uptown",rep:"",orderDate:"1/3/26",cancelDate:"1/13/26",reason:"OLD PENDG CNCL"},
+  {store:"Uptown",rep:"",orderDate:"1/3/26",cancelDate:"1/3/26",reason:"Unknown"},
+  {store:"Cicero",rep:"Julia Ariza",orderDate:"1/3/26",cancelDate:"1/5/26",reason:"CUST REFUSED"},
+  {store:"Oak Ridge",rep:"",orderDate:"1/3/26",cancelDate:"1/3/26",reason:"CANCEL @CHECKIN"},
+  {store:"Evergreen Park",rep:"Adrian Bustamante",orderDate:"1/4/26",cancelDate:"1/4/26",reason:"Unknown"},
+  {store:"Cicero",rep:"Julia Ariza",orderDate:"1/5/26",cancelDate:"1/14/26",reason:"OLD PENDG CNCL"},
+  {store:"Evergreen Park",rep:"",orderDate:"1/7/26",cancelDate:"1/9/26",reason:"CREDIT DENIED"},
+  {store:"Valparaiso",rep:"",orderDate:"1/7/26",cancelDate:"1/9/26",reason:"SAVED CUSTOMER"},
+  {store:"Frankfort",rep:"Noah Cleveland",orderDate:"1/7/26",cancelDate:"1/7/26",reason:"CUSTOMER CHOICE"},
+  {store:"Oak Ridge",rep:"",orderDate:"1/8/26",cancelDate:"2/16/26",reason:"OLD PENDG CNCL"},
+  {store:"Oak Ridge",rep:"",orderDate:"1/8/26",cancelDate:"1/8/26",reason:"NEVER ORDERED"},
+  {store:"Evergreen Park",rep:"Juan Carrillo",orderDate:"1/8/26",cancelDate:"1/14/26",reason:"CUSTOMER CHOICE"},
+  {store:"Tinley Park",rep:"",orderDate:"1/8/26",cancelDate:"1/16/26",reason:"CUST REFUSED"},
+  {store:"Oak Ridge",rep:"",orderDate:"1/8/26",cancelDate:"1/8/26",reason:"CANCEL @CHECKIN"},
+  {store:"Bourbonnais",rep:"Nancy Trombley",orderDate:"1/9/26",cancelDate:"1/10/26",reason:"Unknown"},
+  {store:"Oak Ridge",rep:"",orderDate:"1/9/26",cancelDate:"1/11/26",reason:"CONSENT MISSING"},
+  {store:"Oak Ridge",rep:"",orderDate:"1/9/26",cancelDate:"2/5/26",reason:"Unknown"},
+  {store:"Greeneville",rep:"Daniel Mitchell Jr.",orderDate:"1/10/26",cancelDate:"1/16/26",reason:"CANCEL @CHECKIN"},
+  {store:"Glenview",rep:"Eric Gonzalez",orderDate:"1/10/26",cancelDate:"1/13/26",reason:"CANCEL @CHECKIN"},
+  {store:"Evergreen Park",rep:"Omar Bustamante",orderDate:"1/11/26",cancelDate:"1/11/26",reason:"Unknown"},
+  {store:"Oak Ridge",rep:"Erika McFall",orderDate:"1/11/26",cancelDate:"1/16/26",reason:"OLD PENDG CNCL"},
+  {store:"Evergreen Park",rep:"Juan Carrillo",orderDate:"1/12/26",cancelDate:"1/23/26",reason:"CONTRACT ISSUE"},
+  {store:"Cicero",rep:"Julia Ariza",orderDate:"1/12/26",cancelDate:"2/2/26",reason:"OFFICE CORRECTN"},
+  {store:"Evergreen Park",rep:"Kamar Thomas",orderDate:"1/13/26",cancelDate:"1/13/26",reason:"CUST REFUSED"},
+  {store:"Elkhart",rep:"",orderDate:"1/15/26",cancelDate:"1/17/26",reason:"Unknown"},
+  {store:"Tinley Park",rep:"Osvaldo Garcia",orderDate:"1/16/26",cancelDate:"1/16/26",reason:"Unknown"},
+  {store:"Schererville, IN",rep:"",orderDate:"1/17/26",cancelDate:"1/20/26",reason:"CANCEL @CHECKIN"},
+  {store:"South Bend, IN",rep:"Jorge Tafoya",orderDate:"1/17/26",cancelDate:"1/22/26",reason:"CANCEL @CHECKIN"},
+  {store:"Elkhart",rep:"",orderDate:"1/17/26",cancelDate:"3/26/26",reason:"CUSTOMER CHOICE"},
+  {store:"Hammond Mills",rep:"Alexis Bell",orderDate:"1/17/26",cancelDate:"1/21/26",reason:"CUST REFUSED"},
+  {store:"Cicero",rep:"Sarah Penablanca",orderDate:"1/18/26",cancelDate:"1/20/26",reason:"COMPETITION"},
+  {store:"Cicero",rep:"Cristofer Loredo",orderDate:"1/19/26",cancelDate:"1/24/26",reason:"CUST REFUSED"},
+  {store:"Evergreen Park",rep:"Juan Carrillo",orderDate:"1/19/26",cancelDate:"2/3/26",reason:"Unknown"},
+  {store:"Greeneville",rep:"Angela Hahn",orderDate:"1/20/26",cancelDate:"1/26/26",reason:"Unknown"},
+  {store:"Tinley Park",rep:"",orderDate:"1/20/26",cancelDate:"2/5/26",reason:"NO PERMISSION"},
+  {store:"Evergreen Park",rep:"Kamar Thomas",orderDate:"1/20/26",cancelDate:"1/24/26",reason:"TECH CANCELED"},
+  {store:"Evanston",rep:"",orderDate:"1/21/26",cancelDate:"1/22/26",reason:"Unknown"},
+  {store:"Schererville, IN",rep:"",orderDate:"1/21/26",cancelDate:"2/2/26",reason:"OFFICE CORRECTN"},
+  {store:"Valparaiso",rep:"",orderDate:"1/22/26",cancelDate:"1/29/26",reason:"Unknown"},
+  {store:"Tinley Park",rep:"",orderDate:"1/22/26",cancelDate:"1/25/26",reason:"CUST REFUSED"},
+  {store:"Bourbonnais",rep:"Jose Quintanilla",orderDate:"1/23/26",cancelDate:"2/9/26",reason:"OFFICE CORRECTN"},
+  {store:"Round Lake Beach",rep:"Isabel Betancourt",orderDate:"1/23/26",cancelDate:"1/23/26",reason:"Unknown"},
+  {store:"Michigan City",rep:"Collin Crooks",orderDate:"1/23/26",cancelDate:"2/9/26",reason:"OFFICE CORRECTN"},
+  {store:"Round Lake Beach",rep:"Isabel Betancourt",orderDate:"1/23/26",cancelDate:"1/23/26",reason:"Unknown"},
+  {store:"Evanston",rep:"Gavin Williams",orderDate:"1/24/26",cancelDate:"1/24/26",reason:"Unknown"},
+  {store:"Valparaiso",rep:"",orderDate:"1/24/26",cancelDate:"1/26/26",reason:"Unknown"},
+  {store:"Cicero",rep:"Sarah Penablanca",orderDate:"1/25/26",cancelDate:"1/26/26",reason:"OFFICE CORRECTN"},
+  {store:"South Skokie, IL",rep:"Imaad Dhorajiwala",orderDate:"1/26/26",cancelDate:"2/5/26",reason:"CUST REFUSED"},
+  {store:"Valparaiso",rep:"Anthony Evans",orderDate:"1/26/26",cancelDate:"1/27/26",reason:"Unknown"},
+  {store:"Oak Ridge",rep:"Sara Agle",orderDate:"1/26/26",cancelDate:"1/29/26",reason:"CUST REFUSED"},
+  {store:"Oak Ridge",rep:"",orderDate:"1/26/26",cancelDate:"1/30/26",reason:"CUST REFUSED"},
+  {store:"Cicero",rep:"Francisco Salazar",orderDate:"1/26/26",cancelDate:"2/11/26",reason:"CANCEL @CHECKIN"},
+  {store:"Uptown",rep:"",orderDate:"1/29/26",cancelDate:"2/2/26",reason:"CUSTOMER CHOICE"},
+  {store:"Evergreen Park",rep:"Vivian Avila",orderDate:"1/29/26",cancelDate:"1/30/26",reason:"CUST REFUSED"},
+  {store:"Valparaiso",rep:"",orderDate:"1/29/26",cancelDate:"1/30/26",reason:"Unknown"},
+  {store:"Kildeer",rep:"Kenisha Banks",orderDate:"1/30/26",cancelDate:"1/30/26",reason:"Unknown"},
+  {store:"South Knoxville",rep:"Demarcus McKamey",orderDate:"1/30/26",cancelDate:"2/1/26",reason:"Unknown"},
+  {store:"Uptown",rep:"",orderDate:"2/1/26",cancelDate:"2/1/26",reason:"CANCEL @CHECKIN"},
+  {store:"Valparaiso",rep:"Daniel Long",orderDate:"2/2/26",cancelDate:"2/10/26",reason:"CREDIT DENIED"},
+  {store:"Oak Ridge",rep:"",orderDate:"2/2/26",cancelDate:"2/6/26",reason:"NEVER ORDERED"},
+  {store:"South Knoxville",rep:"",orderDate:"2/3/26",cancelDate:"2/5/26",reason:"Unknown"},
+  {store:"Evanston",rep:"",orderDate:"2/4/26",cancelDate:"2/5/26",reason:"Unknown"},
+  {store:"Greeneville",rep:"Angela Hahn",orderDate:"2/4/26",cancelDate:"2/4/26",reason:"CANCEL @CHECKIN"},
+  {store:"Oak Ridge",rep:"",orderDate:"2/4/26",cancelDate:"2/16/26",reason:"OFFICE CORRECTN"},
+  {store:"Oak Ridge",rep:"",orderDate:"2/4/26",cancelDate:"2/23/26",reason:"NEVER ORDERED"},
+  {store:"Oak Ridge",rep:"Stefan Murrell-Onley",orderDate:"2/5/26",cancelDate:"2/22/26",reason:"CUST REFUSED"},
+  {store:"Kildeer",rep:"",orderDate:"2/6/26",cancelDate:"2/10/26",reason:"OUTAGE RELATED"},
+  {store:"Bourbonnais",rep:"Pierre Henderson",orderDate:"2/6/26",cancelDate:"2/24/26",reason:"CONSENT DENIED"},
+  {store:"Greeneville",rep:"Dalton Fox",orderDate:"2/6/26",cancelDate:"2/6/26",reason:"CANCEL @CHECKIN"},
+  {store:"Greeneville",rep:"Daniel Mitchell Jr.",orderDate:"2/6/26",cancelDate:"2/6/26",reason:"CUST REFUSED"},
+  {store:"Schererville, IN",rep:"",orderDate:"2/6/26",cancelDate:"2/6/26",reason:"CANCEL @CHECKIN"},
+  {store:"Bourbonnais",rep:"Anthony Ray",orderDate:"2/7/26",cancelDate:"2/11/26",reason:"Unknown"},
+  {store:"Tinley Park",rep:"Emily Guzman",orderDate:"2/9/26",cancelDate:"2/10/26",reason:"CREDIT DENIED"},
+  {store:"Schererville, IN",rep:"",orderDate:"2/9/26",cancelDate:"2/9/26",reason:"Unknown"},
+  {store:"Hammond Mills",rep:"",orderDate:"2/9/26",cancelDate:"2/10/26",reason:"CREDIT DENIED"},
+  {store:"Glenview",rep:"Alexandro Flores",orderDate:"2/11/26",cancelDate:"2/13/26",reason:"MADE PAYMENT AR"},
+  {store:"Burbank",rep:"Christopher Coleman",orderDate:"2/11/26",cancelDate:"2/15/26",reason:"CUST REFUSED"},
+  {store:"Greeneville",rep:"Dalton Arwodd",orderDate:"2/11/26",cancelDate:"2/11/26",reason:"CUST REFUSED"},
+  {store:"Oak Ridge",rep:"",orderDate:"2/12/26",cancelDate:"2/13/26",reason:"WRONG ADDRESS"},
+  {store:"Bourbonnais",rep:"",orderDate:"2/12/26",cancelDate:"2/12/26",reason:"CUST REFUSED"},
+  {store:"Oak Ridge",rep:"",orderDate:"2/13/26",cancelDate:"2/28/26",reason:"CUST REFUSED"},
+  {store:"Oak Ridge",rep:"",orderDate:"2/13/26",cancelDate:"2/17/26",reason:"CANCEL @CHECKIN"},
+  {store:"South Bend, IN",rep:"Jorge Tafoya",orderDate:"2/13/26",cancelDate:"2/16/26",reason:"OFFICE CORRECTN"},
+  {store:"Tinley Park",rep:"",orderDate:"2/13/26",cancelDate:"2/15/26",reason:"CUSTOMER CHOICE"},
+  {store:"South Bend, IN",rep:"Jorge Tafoya",orderDate:"2/14/26",cancelDate:"3/1/26",reason:"OLD PENDG CNCL"},
+  {store:"Bourbonnais",rep:"Kiara Jackson",orderDate:"2/14/26",cancelDate:"2/14/26",reason:"Unknown"},
+  {store:"Kildeer",rep:"",orderDate:"2/14/26",cancelDate:"3/9/26",reason:"OLD PENDG CNCL"},
+  {store:"Schererville, IN",rep:"",orderDate:"2/15/26",cancelDate:"2/15/26",reason:"Unknown"},
+  {store:"Evanston",rep:"",orderDate:"2/16/26",cancelDate:"2/25/26",reason:"OLD PENDG CNCL"},
+  {store:"South Knoxville",rep:"Kayla Kirkland",orderDate:"2/16/26",cancelDate:"2/25/26",reason:"OFFICE CORRECTN"},
+  {store:"Oak Ridge",rep:"Zoe Spradling",orderDate:"2/16/26",cancelDate:"2/23/26",reason:"WRONG ADDRESS"},
+  {store:"Valparaiso",rep:"Emari Washington",orderDate:"2/16/26",cancelDate:"2/17/26",reason:"BAL OWED/DUE"},
+  {store:"Evanston",rep:"",orderDate:"2/18/26",cancelDate:"3/6/26",reason:"CANCEL @CHECKIN"},
+  {store:"Evanston",rep:"",orderDate:"2/18/26",cancelDate:"2/18/26",reason:"Unknown"},
+  {store:"Greeneville",rep:"Dalton Fox",orderDate:"2/19/26",cancelDate:"3/9/26",reason:"COMPETITION"},
+  {store:"Greeneville",rep:"",orderDate:"2/19/26",cancelDate:"2/19/26",reason:"Unknown"},
+  {store:"Bourbonnais",rep:"Jose Quintanilla",orderDate:"2/19/26",cancelDate:"2/20/26",reason:"Unknown"},
+  {store:"Schererville, IN",rep:"Brandon Smelko",orderDate:"2/20/26",cancelDate:"3/2/26",reason:"OLD PENDG CNCL"},
+  {store:"Glenview",rep:"Aedo Yonan",orderDate:"2/20/26",cancelDate:"2/28/26",reason:"CUST REFUSED"},
+  {store:"Oak Ridge",rep:"Erika McFall",orderDate:"2/20/26",cancelDate:"3/5/26",reason:"OFFICE CORRECTN"},
+  {store:"South Knoxville",rep:"",orderDate:"2/21/26",cancelDate:"3/2/26",reason:"CONSENT DENIED"},
+  {store:"Uptown",rep:"",orderDate:"2/22/26",cancelDate:"3/2/26",reason:"TECH CANCELED"},
+  {store:"Glenview",rep:"Aedo Yonan",orderDate:"2/22/26",cancelDate:"2/22/26",reason:"Unknown"},
+  {store:"Schererville, IN",rep:"April Vasquez",orderDate:"2/22/26",cancelDate:"3/3/26",reason:"CUST REFUSED"},
+  {store:"South Knoxville",rep:"Demarcus McKamey",orderDate:"2/24/26",cancelDate:"2/24/26",reason:"Unknown"},
+  {store:"Greeneville",rep:"Nicholes Gilland",orderDate:"2/24/26",cancelDate:"3/2/26",reason:"IVR CANCEL"},
+  {store:"South Bend, IN",rep:"",orderDate:"2/24/26",cancelDate:"2/24/26",reason:"AESTHETICS PROB"},
+  {store:"Valparaiso",rep:"",orderDate:"2/25/26",cancelDate:"2/25/26",reason:"CUST REFUSED"},
+  {store:"Oak Ridge",rep:"Thomas Ingram",orderDate:"2/25/26",cancelDate:"3/9/26",reason:"OLD PENDG CNCL"},
+  {store:"Tinley Park",rep:"Destini Kelley",orderDate:"2/28/26",cancelDate:"3/4/26",reason:"Unknown"},
+  {store:"Kildeer",rep:"",orderDate:"3/1/26",cancelDate:"3/11/26",reason:"Unknown"},
+  {store:"Elkhart",rep:"",orderDate:"3/2/26",cancelDate:"3/4/26",reason:"OLD PENDG CNCL"},
+  {store:"Cicero",rep:"Vanessa Cortez",orderDate:"3/2/26",cancelDate:"3/2/26",reason:"ORDR ENTRY ERR"},
+  {store:"Hammond Mills",rep:"Reina Salgado",orderDate:"3/2/26",cancelDate:"3/15/26",reason:"Unknown"},
+  {store:"Evergreen Park",rep:"Jesus Romo",orderDate:"3/3/26",cancelDate:"3/4/26",reason:"Unknown"},
+  {store:"Oak Ridge",rep:"Thomas Ingram",orderDate:"3/3/26",cancelDate:"3/6/26",reason:"OLD PENDG CNCL"},
+  {store:"Kildeer",rep:"Kenisha Banks",orderDate:"3/4/26",cancelDate:"3/9/26",reason:"CANCEL @CHECKIN"},
+  {store:"Evergreen Park",rep:"Omar Bustamante",orderDate:"3/7/26",cancelDate:"3/9/26",reason:"OFFICE CORRECTN"},
+  {store:"Michigan City",rep:"Collin Crooks",orderDate:"3/7/26",cancelDate:"3/19/26",reason:"Unknown"},
+  {store:"Valparaiso",rep:"",orderDate:"3/8/26",cancelDate:"3/8/26",reason:"CANCEL @CHECKIN"},
+  {store:"Kildeer",rep:"",orderDate:"3/8/26",cancelDate:"3/8/26",reason:"Unknown"},
+  {store:"Kildeer",rep:"",orderDate:"3/8/26",cancelDate:"3/8/26",reason:"Unknown"},
+  {store:"South Bend, IN",rep:"",orderDate:"3/10/26",cancelDate:"3/16/26",reason:"CUST REFUSED"},
+  {store:"South Knoxville",rep:"Kayla Kirkland",orderDate:"3/10/26",cancelDate:"3/19/26",reason:"OLD PENDG CNCL"},
+  {store:"South Knoxville",rep:"Dereck Fesperman",orderDate:"3/10/26",cancelDate:"3/14/26",reason:"COMPETITION"},
+  {store:"Evergreen Park",rep:"Wend Cerda Bacilio",orderDate:"3/15/26",cancelDate:"3/15/26",reason:"CUST REFUSED"},
+  {store:"South Bend, IN",rep:"",orderDate:"3/16/26",cancelDate:"3/17/26",reason:"Unknown"},
+  {store:"Glenview",rep:"Aedo Yonan",orderDate:"3/17/26",cancelDate:"3/18/26",reason:"Unknown"},
+  {store:"Kildeer",rep:"Kenisha Banks",orderDate:"3/18/26",cancelDate:"3/18/26",reason:"Unknown"},
+  {store:"Bourbonnais",rep:"",orderDate:"3/18/26",cancelDate:"3/26/26",reason:"Unknown"},
+  {store:"Oak Ridge",rep:"Zoe Spradling",orderDate:"3/18/26",cancelDate:"3/19/26",reason:"OFFICE CORRECTN"},
+  {store:"Bourbonnais",rep:"Louis Yiakos",orderDate:"3/18/26",cancelDate:"3/20/26",reason:"CUST REFUSED"},
+  {store:"Schererville, IN",rep:"April Vasquez",orderDate:"3/18/26",cancelDate:"3/18/26",reason:"CUST REFUSED"},
+  {store:"Glenview",rep:"Linda Weeks",orderDate:"3/19/26",cancelDate:"3/19/26",reason:"CREDIT DENIED"},
+  {store:"Bourbonnais",rep:"",orderDate:"3/20/26",cancelDate:"3/25/26",reason:"COMPETITION"},
+  {store:"Oak Ridge",rep:"Zoe Spradling",orderDate:"3/20/26",cancelDate:"3/29/26",reason:"SMS"},
+  {store:"Evergreen Park",rep:"Juan Carrillo",orderDate:"3/21/26",cancelDate:"3/21/26",reason:"NO MONEY"},
+  {store:"Valparaiso",rep:"",orderDate:"3/23/26",cancelDate:"3/23/26",reason:"Unknown"},
+  {store:"South Knoxville",rep:"Dereck Fesperman",orderDate:"3/24/26",cancelDate:"3/27/26",reason:"Unknown"},
+  {store:"Hammond Mills",rep:"Jeremiah Watson",orderDate:"3/24/26",cancelDate:"3/25/26",reason:"CUST REFUSED"},
+  {store:"Cicero",rep:"",orderDate:"3/24/26",cancelDate:"3/24/26",reason:"CUST REFUSED"},
+  {store:"Glenview",rep:"Aedo Yonan",orderDate:"3/24/26",cancelDate:"3/26/26",reason:"Unknown"},
+  {store:"Glenview",rep:"Aedo Yonan",orderDate:"3/25/26",cancelDate:"3/27/26",reason:"CUST REFUSED"},
+  {store:"South Knoxville",rep:"",orderDate:"3/29/26",cancelDate:"3/29/26",reason:"CAT CANCEL"}
+];
+const ISSUE_INFO = {
+  "Cancel Rekey": { color:"#ef4444", bg:"#fef2f2", border:"#fecaca", description:"The customer already had service at this address. The service was cancelled at the current address. The accounts below are from the new service accounts that were setup at the same address for the same customer. Cancelling a service then restarting a service at an address is not commissionable, and is considered a cancel/rekey. These can be a serious offense, and we need to refrain from practicing this at all costs." },
+  "Fails 3-Day Rule": { color:"#f97316", bg:"#fff7ed", border:"#fed7aa", description:"This address had active service within the last 3 days that matched with the new customer's data. To get paid on core services, new accounts must be completely new customers. Restarting services under a spouse or other family member's name are not commissionable." },
+  "Insufficient Revenue Lift": { color:"#eab308", bg:"#fefce8", border:"#fef08a", description:"When making changes to a customer's account in CSG, the customer's bill must increase by more than a dollar for the sale to be commissionable. If the bill decreases by a dollar, this sale would be deemed as an insufficient revenue lift. These transactions should not be put into RQ4." },
+  "More than 60 days to install": { color:"#8b5cf6", bg:"#faf5ff", border:"#ddd6fe", description:"The customer never scheduled or completed service installation within the first 60 days after the order was placed. Installs outside this window are not eligible for commission." },
+  "No Camera Sold With Order": { color:"#06b6d4", bg:"#ecfeff", border:"#a5f3fc", description:"A smart home security system was sold to the customer, but no camera was included in the order. All smart home orders must include at least one camera to be eligible for payment." },
+  "XFM - Same Day Disconnect": { color:"#ec4899", bg:"#fdf2f8", border:"#fbcfe8", description:"A mobile (XFM) line was set up for the customer, but they cancelled that same day. Same-day cancellations do not qualify for commission." },
+  "Risk Assurance": { color:"#64748b", bg:"#f8fafc", border:"#cbd5e1", description:"This order failed internal risk assessment verification in CSG. When performing a Risk Assessment in CSG, you must follow the message from the Risk Assessment. If CSG deems that the customer should leave a $100 deposit, the customer would need to leave the $100 to be deemed commissionable. To avoid errors with Risk Assessment, setup services in XOE on your iPad. XOE will take the $25 prepayment for every customer, and will avoid this error entirely." },
+  "Customer had service within 120 Days": { color:"#10b981", bg:"#ecfdf5", border:"#a7f3d0", description:"The customer already had active or recently cancelled service within the past 120 days. Orders for customers with recent service history are not eligible for commission." },
+  "Customer had FLEX service within 120 Days": { color:"#10b981", bg:"#ecfdf5", border:"#a7f3d0", description:"The customer had a FLEX service arrangement within the past 120 days, making this order ineligible for commission." },
+  "Customer disconnected more than twice": { color:"#f43f5e", bg:"#fff1f2", border:"#fecdd3", description:"The customer has disconnected service more than twice, making this transaction ineligible for commission. Repeated disconnections indicate a pattern that does not qualify under the compensation plan." },
+};
+
+
+function acctTableHTML(acctMap, color, border) {
+  const entries = Object.entries(acctMap);
+  if (!entries.length) return '';
+  // Sort by date ascending
+  entries.sort((a, b) => {
+    const parse = d => { const [m,day,y] = d.split(/[\/|]/)[0].split('/'); return new Date('20'+y, m-1, day); };
+    return parse(a[0]) - parse(b[0]);
+  });
+  return `
+    <table class="acct-table">
+      <thead><tr><th>#</th><th>Order Date</th><th>Lines of Business</th></tr></thead>
+      <tbody>${entries.map(([key, lobs], i) => {
+        const date = key.includes('|') ? key.split('|')[1] : key;
+        const lobHTML = [...lobs].sort().map(l => {
+          const cls = l==="HSI"?"lob-hsi":l==="Video"?"lob-video":l==="XFM"?"lob-xfm":l==="XHS"?"lob-xhs":l==="CDV"?"lob-cdv":"lob-other";
+          return '<span class="lob-pill '+cls+'">'+l+'</span>';
+        }).join("");
+        return '<tr><td style="color:'+color+';font-weight:500;width:36px">Acct '+(i+1)+'</td><td style="color:#94a3b8;white-space:nowrap;width:72px">'+date+'</td><td>'+lobHTML+'</td></tr>';
+      }).join("")}</tbody>
+    </table>`;
+}
+
+function acctDateRange(acctMap) {
+  const dates = Object.keys(acctMap).map(k => k.includes('|') ? k.split('|')[1] : k);
+  if (!dates.length) return '';
+  const parsed = dates.map(d => { const [m,day,y] = d.split('/'); return {d, t: new Date('20'+y,m-1,day)}; });
+  parsed.sort((a,b) => a.t - b.t);
+  if (parsed.length === 1) return parsed[0].d;
+  return parsed[0].d + ' – ' + parsed[parsed.length-1].d;
+}
+function getIssueKey(row) {
+  return row.type === "Risk Assurance" ? "Risk Assurance" : (row.subType || row.type);
+}
+function issueColor(k) { return (ISSUE_INFO[k]||{color:"#64748b"}).color; }
+function issueBg(k) { return (ISSUE_INFO[k]||{bg:"#f8fafc"}).bg; }
+function issueBorder(k) { return (ISSUE_INFO[k]||{border:"#cbd5e1"}).border; }
+
+// ── State ────────────────────────────────────────────────────────────────────
+let currentView = "rep";
+let selectedKey  = null;
+let expandedIssue = null;
+let searchQuery  = "";
+
+// ── Build stats ───────────────────────────────────────────────────────────────
+function buildRepStats() {
+  const map = {};
+  RAW_DATA.filter(d => d.rep && d.rep.trim()).forEach(row => {
+    const rep = row.rep;
+    if (!map[rep]) map[rep] = { key: rep, label: rep, sub: row.store, issues: {}, allRows: [] };
+    map[rep].allRows.push(row);
+    const k = getIssueKey(row);
+    if (!map[rep].issues[k]) map[rep].issues[k] = { count:0, acctMap: {} };
+    // Group LOBs by order date — same date = same account (anonymised)
+    if (row.lob) {
+      if (!map[rep].issues[k].acctMap[row.date]) map[rep].issues[k].acctMap[row.date] = new Set();
+      map[rep].issues[k].acctMap[row.date].add(row.lob);
+    }
+    map[rep].issues[k].count++;
+  });
+  return Object.values(map).sort((a,b) => b.allRows.length - a.allRows.length);
+}
+
+function buildStoreStats() {
+  const map = {};
+  RAW_DATA.forEach(row => {
+    const s = row.store;
+    if (!map[s]) map[s] = { key: s, label: s, reps: new Set(), issues: {}, allRows: [] };
+    map[s].allRows.push(row);
+    if (row.rep) map[s].reps.add(row.rep);
+    const k = getIssueKey(row);
+    if (!map[s].issues[k]) map[s].issues[k] = { count:0, acctMap: {} };
+    if (row.lob) {
+      const key2 = (row.rep||'') + '|' + row.date;
+      if (!map[s].issues[k].acctMap[key2]) map[s].issues[k].acctMap[key2] = new Set();
+      map[s].issues[k].acctMap[key2].add(row.lob);
+    }
+    map[s].issues[k].count++;
+  });
+  return Object.values(map).sort((a,b) => b.allRows.length - a.allRows.length);
+}
+
+const repStats   = buildRepStats();
+const storeStats = buildStoreStats();
+
+function buildExceptionStats() {
+  const map = {};
+  RAW_DATA.filter(d => d.rep && d.rep.trim()).forEach(row => {
+    const k = getIssueKey(row);
+    if (!map[k]) map[k] = { key: k, label: k, reps: new Set(), stores: new Set(), issues: {}, allRows: [] };
+    map[k].allRows.push(row);
+    if (row.rep) map[k].reps.add(row.rep);
+    if (row.store) map[k].stores.add(row.store);
+    // sub-breakdown by rep
+    const rep = row.rep;
+    if (!map[k].issues[rep]) map[k].issues[rep] = { count:0, acctMap: {}, store: row.store };
+    map[k].issues[rep].count++;
+    if (row.lob) {
+      if (!map[k].issues[rep].acctMap[row.date]) map[k].issues[rep].acctMap[row.date] = new Set();
+      map[k].issues[rep].acctMap[row.date].add(row.lob);
+    }
+  });
+  return Object.values(map).sort((a,b) => b.allRows.length - a.allRows.length);
+}
+
+const exceptionStats = buildExceptionStats();
+
+// ── Cancel reason colors ──────────────────────────────────────────────────────
+const CANCEL_REASON_INFO = {
+  "CUST REFUSED":    { color:"#ef4444", bg:"#fef2f2", border:"#fecaca", desc:"The customer refused the installation or service at the door." },
+  "OLD PENDG CNCL":  { color:"#64748b", bg:"#f8fafc", border:"#cbd5e1", desc:"An old order that was left in a pending state and was subsequently cancelled by the system." },
+  "CANCEL @CHECKIN": { color:"#f97316", bg:"#fff7ed", border:"#fed7aa", desc:"The order was cancelled at the time of the technician check-in, typically because the customer was not home or refused service on arrival." },
+  "OFFICE CORRECTN": { color:"#8b5cf6", bg:"#faf5ff", border:"#ddd6fe", desc:"An office correction was made to cancel this order, usually due to a data entry or processing error." },
+  "CUSTOMER CHOICE": { color:"#06b6d4", bg:"#ecfeff", border:"#a5f3fc", desc:"The customer voluntarily chose to cancel their order after it was placed." },
+  "COMPETITION":     { color:"#eab308", bg:"#fefce8", border:"#fef08a", desc:"The customer cancelled because they chose to go with a competing provider." },
+  "CREDIT DENIED":   { color:"#ec4899", bg:"#fdf2f8", border:"#fbcfe8", desc:"The customer's credit check failed and the order could not be fulfilled." },
+  "NEVER ORDERED":   { color:"#10b981", bg:"#ecfdf5", border:"#a7f3d0", desc:"The customer claims they never placed this order — possible unauthorized or mistaken order." },
+  "ORDR ENTRY ERR":  { color:"#f43f5e", bg:"#fff1f2", border:"#fecdd3", desc:"The order was cancelled due to a rep entry error — incorrect information was submitted." },
+  "WRONG ADDRESS":   { color:"#a855f7", bg:"#faf5ff", border:"#e9d5ff", desc:"The order was placed at the wrong address and had to be cancelled." },
+  "AESTHETICS PROB": { color:"#14b8a6", bg:"#f0fdfa", border:"#99f6e4", desc:"The customer cancelled due to aesthetic concerns, such as objections to equipment installation locations." },
+  "BAL OWED/DUE":    { color:"#f97316", bg:"#fff7ed", border:"#fed7aa", desc:"The customer has an outstanding balance owed, preventing the new order from being fulfilled." },
+  "CONSENT DENIED":  { color:"#ef4444", bg:"#fef2f2", border:"#fecaca", desc:"The customer denied consent for the order or service terms." },
+  "TECH CANCELED":   { color:"#64748b", bg:"#f8fafc", border:"#cbd5e1", desc:"The technician cancelled the order during the service visit." },
+  "Unknown":         { color:"#94a3b8", bg:"#f1f5f9", border:"#e2e8f0", desc:"No cancel reason was recorded for this order." },
+};
+function cancelColor(r)  { return (CANCEL_REASON_INFO[r]||{color:"#94a3b8"}).color; }
+function cancelBg(r)     { return (CANCEL_REASON_INFO[r]||{bg:"#f1f5f9"}).bg; }
+function cancelBorder(r) { return (CANCEL_REASON_INFO[r]||{border:"#e2e8f0"}).border; }
+function cancelDesc(r)   { return (CANCEL_REASON_INFO[r]||{desc:"No description available."}).desc; }
+
+// ── Build cancel stats (by store) ─────────────────────────────────────────────
+function buildCancelStats() {
+  const map = {};
+  CANCEL_DATA.forEach(row => {
+    const s = row.store;
+    if (!map[s]) map[s] = { key: s, label: s, reasons: {}, allRows: [], reps: new Set() };
+    map[s].allRows.push(row);
+    if (row.rep) map[s].reps.add(row.rep);
+    const r = row.reason;
+    if (!map[s].reasons[r]) map[s].reasons[r] = { count: 0, rows: [] };
+    map[s].reasons[r].count++;
+    map[s].reasons[r].rows.push(row);
+  });
+  return Object.values(map).sort((a,b) => b.allRows.length - a.allRows.length);
+}
+const cancelStats = buildCancelStats();
+
+function getStats() {
+  if (currentView === "rep") return repStats;
+  if (currentView === "store") return storeStats;
+  if (currentView === "exception") return exceptionStats;
+  return cancelStats;
+}
+function getSelected() { return getStats().find(s => s.key === selectedKey); }
+
+// ── Top issues global ─────────────────────────────────────────────────────────
+function getTopIssues() {
+  const counts = {};
+  RAW_DATA.filter(d => d.rep && d.rep.trim()).forEach(r => {
+    const k = getIssueKey(r);
+    counts[k] = (counts[k]||0) + 1;
+  });
+  return Object.entries(counts).sort((a,b) => b[1]-a[1]);
+}
+const topIssues = getTopIssues();
+const filteredCount = RAW_DATA.filter(d => d.rep && d.rep.trim()).length;
+
+// ── Render ────────────────────────────────────────────────────────────────────
+function renderSidebar() {
+  document.getElementById("total-count").textContent = currentView === "cancel" ? CANCEL_DATA.length : filteredCount;
+  if (currentView === "rep") {
+    document.getElementById("rep-count").textContent = repStats.length;
+    document.getElementById("count-label").textContent = "Reps Affected";
+  } else if (currentView === "store") {
+    document.getElementById("rep-count").textContent = storeStats.length;
+    document.getElementById("count-label").textContent = "Stores";
+  } else if (currentView === "exception") {
+    document.getElementById("rep-count").textContent = exceptionStats.length;
+    document.getElementById("count-label").textContent = "Issue Types";
+  } else {
+    document.getElementById("rep-count").textContent = cancelStats.length;
+    document.getElementById("count-label").textContent = "Stores";
+  }
+
+  // Mini chart — show cancel reasons for cancel view
+  if (currentView === "cancel") {
+    const reasonCounts = {};
+    CANCEL_DATA.forEach(r => { reasonCounts[r.reason] = (reasonCounts[r.reason]||0) + 1; });
+    const top5 = Object.entries(reasonCounts).sort((a,b)=>b[1]-a[1]).slice(0,5);
+    const max = top5[0][1];
+    document.getElementById("top-issues-chart").innerHTML = top5.map(([reason, cnt]) => `
+      <div class="bar-row">
+        <div class="bar-row-labels">
+          <span style="color:${cancelColor(reason)};max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${reason}</span>
+          <span style="color:#64748b">${cnt}</span>
+        </div>
+        <div class="bar-track"><div class="bar-fill" style="width:${(cnt/max)*100}%;background:${cancelColor(reason)}"></div></div>
+      </div>`).join("");
+  } else {
+    const max = topIssues[0][1];
+    document.getElementById("top-issues-chart").innerHTML = topIssues.slice(0,5).map(([key,cnt]) => `
+      <div class="bar-row">
+        <div class="bar-row-labels">
+          <span style="color:${issueColor(key)};max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${key}</span>
+          <span style="color:#64748b">${cnt}</span>
+        </div>
+        <div class="bar-track"><div class="bar-fill" style="width:${(cnt/max)*100}%;background:${issueColor(key)}"></div></div>
+      </div>`).join("");
+  }
+
+  // List
+  const q = searchQuery.toLowerCase();
+  const stats = getStats();
+  const filtered = stats.filter(s => !q || s.label.toLowerCase().includes(q));
+  const countLabel = q ? `${filtered.length} of ${stats.length}` : stats.length;
+
+  if (currentView === "rep") document.getElementById("list-label").textContent = `Reps (${countLabel})`;
+  else if (currentView === "store") document.getElementById("list-label").textContent = `Stores (${countLabel})`;
+  else if (currentView === "exception") document.getElementById("list-label").textContent = `Issue Types (${countLabel})`;
+  else document.getElementById("list-label").textContent = `Stores (${countLabel})`;
+
+  document.getElementById("search-input").parentElement.style.display = currentView === "exception" ? "none" : "block";
+
+  document.getElementById("list-container").innerHTML = filtered.length
+    ? filtered.map(s => {
+        if (currentView === "exception") {
+          return `<div class="list-item ${s.key === selectedKey ? 'active' : ''}" onclick="selectItem('${s.key.replace(/'/g,"\\'")}')">
+            <div class="list-item-name" style="color:${issueColor(s.key)}">${s.label}</div>
+            <div class="list-item-sub"><span style="color:#f97316">${s.allRows.length} exceptions</span> · ${s.reps.size} reps · ${s.stores.size} stores</div>
+          </div>`;
+        }
+        if (currentView === "cancel") {
+          const topReason = Object.entries(s.reasons).sort((a,b)=>b[1].count-a[1].count)[0];
+          return `<div class="list-item ${s.key === selectedKey ? 'active' : ''}" onclick="selectItem('${s.key.replace(/'/g,"\\'")}')">
+            <div class="list-item-name">${s.label}</div>
+            <div class="list-item-sub"><span style="color:#f97316">${s.allRows.length} cancellations</span>${topReason ? ` · Top: <span style="color:${cancelColor(topReason[0])}">${topReason[0]}</span>` : ''}</div>
+          </div>`;
+        }
+        return `<div class="list-item ${s.key === selectedKey ? 'active' : ''}" onclick="selectItem('${s.key.replace(/'/g,"\\'")}')">
+          <div class="list-item-name">${s.label}</div>
+          <div class="list-item-sub">${currentView === "rep"
+            ? `${s.sub} · <span style="color:#f97316">${s.allRows.length} exceptions</span>`
+            : `<span style="color:#f97316">${s.allRows.length} exceptions</span> · ${s.reps.size} reps`
+          }</div>
+        </div>`;
+      }).join("")
+    : `<div style="color:#475569;font-size:12px;padding:12px;text-align:center;">No results for "${searchQuery}"</div>`;
+}
+
+function renderMain() {
+  const sel = getSelected();
+  const main = document.getElementById("main-content");
+  if (!sel) {
+    const emptyLabel = currentView === "rep" ? "SELECT A REP" : currentView === "store" ? "SELECT A STORE" : currentView === "exception" ? "SELECT AN EXCEPTION" : "SELECT A STORE";
+    main.innerHTML = `<div class="empty-state">
+      <div class="empty-title">${emptyLabel}</div>
+      <div class="empty-sub">Choose from the list to view detailed ${currentView === "cancel" ? "cancellations" : "exceptions"}</div>
+    </div>`;
+    return;
+  }
+
+  // ── Cancel view ──────────────────────────────────────────────────────────────
+  if (currentView === "cancel") {
+    const reasonEntries = Object.entries(sel.reasons).sort((a,b) => b[1].count - a[1].count);
+    const badgeHTML = reasonEntries.map(([r, d]) => `
+      <div class="issue-badge" style="color:${cancelColor(r)};background:${cancelBg(r)};border-color:${cancelBorder(r)}">
+        ${r} <strong>×${d.count}</strong>
+      </div>`).join("");
+
+    const cardsHTML = reasonEntries.map(([reason, d]) => {
+      const isOpen = expandedIssue === reason;
+      // Group by rep within this reason
+      const repMap = {};
+      d.rows.forEach(row => {
+        const k = row.rep || 'Unknown Rep';
+        if (!repMap[k]) repMap[k] = [];
+        repMap[k].push(row);
+      });
+      const repEntries = Object.entries(repMap).sort((a,b) => b[1].length - a[1].length);
+
+      const bodyHTML = isOpen ? `
+        <div class="issue-body" style="border-top:1px solid ${cancelBorder(reason)}">
+          <div class="issue-desc"><strong style="color:${cancelColor(reason)}">What this means:</strong> ${cancelDesc(reason)}</div>
+          <div class="section-label" style="margin-bottom:8px">Orders (${d.rows.length})</div>
+          <table class="acct-table">
+            <thead><tr><th>Rep</th><th>Order Date</th><th>Cancel Date</th></tr></thead>
+            <tbody>${d.rows.map(row => `
+              <tr>
+                <td style="color:#94a3b8">${row.rep || '<span style="color:#475569;font-style:italic">Unknown</span>'}</td>
+                <td style="color:#64748b;font-size:10px">${row.orderDate}</td>
+                <td style="color:#64748b;font-size:10px">${row.cancelDate}</td>
+              </tr>`).join("")}
+            </tbody>
+          </table>
+          ${repEntries.length > 1 ? `<div style="margin-top:14px">
+            <div class="section-label" style="margin-bottom:6px">By Rep</div>
+            <div>${repEntries.map(([rep, rows]) => `
+              <span class="rep-tag" style="background:rgba(0,0,0,0.08);border:1px solid ${cancelBorder(reason)};color:${cancelColor(reason)}">
+                ${rep} <strong>×${rows.length}</strong>
+              </span>`).join("")}
+            </div>
+          </div>` : ''}
+        </div>` : "";
+
+      return `
+        <div class="issue-card" style="background:${cancelBg(reason)};border-color:${cancelBorder(reason)}" onclick="toggleIssue('${reason.replace(/'/g,"\\'")}')">
+          <div class="issue-card-header">
+            <div style="display:flex;align-items:center;gap:12px">
+              <div class="issue-icon" style="background:${cancelColor(reason)}">${d.count}</div>
+              <div>
+                <div class="issue-name" style="color:${cancelColor(reason)}">${reason}</div>
+                <div class="issue-meta">${d.rows.length} order${d.rows.length!==1?"s":""} · ${new Set(d.rows.map(r=>r.rep).filter(Boolean)).size} reps</div>
+              </div>
+            </div>
+            <div class="issue-toggle">${isOpen ? "▲" : "▼"}</div>
+          </div>
+          ${bodyHTML}
+        </div>`;
+    }).join("");
+
+    main.innerHTML = `
+      <div class="detail-header">
+        <div class="detail-title">${sel.label}</div>
+        <div class="detail-sub">${sel.allRows.length} cancelled orders · ${reasonEntries.length} reason codes · ${sel.reps.size} reps</div>
+      </div>
+      <div class="badge-row">${badgeHTML}</div>
+      ${cardsHTML}`;
+    return;
+  }
+
+  // ── Exception view: breakdown by rep ────────────────────────────────────────
+  if (currentView === "exception") {
+    const issueKey = sel.key;
+    const info = ISSUE_INFO[issueKey] || {};
+    const repEntries = Object.entries(sel.issues).sort((a,b) => b[1].count - a[1].count);
+
+    const repCardsHTML = repEntries.map(([rep, d]) => {
+      const repIssueKey = rep + '||' + issueKey;
+      const isOpen = expandedIssue === repIssueKey;
+      return `
+        <div class="issue-card" style="background:${issueBg(issueKey)};border-color:${issueBorder(issueKey)}" onclick="toggleIssue('${repIssueKey.replace(/'/g,"\\'").replace(/"/g,'&quot;')}')">
+          <div class="issue-card-header">
+            <div style="display:flex;align-items:center;gap:12px">
+              <div class="issue-icon" style="background:${issueColor(issueKey)}">${d.count}</div>
+              <div>
+                <div class="issue-name" style="color:${issueColor(issueKey)}">${rep}</div>
+                <div class="issue-meta">${d.store} · ${Object.keys(d.acctMap).length} account${Object.keys(d.acctMap).length!==1?"s":""} · ${d.count} line${d.count!==1?"s":""} · ${acctDateRange(d.acctMap)}</div>
+              </div>
+            </div>
+            <div class="issue-toggle">${isOpen ? "▲" : "▼"}</div>
+          </div>
+          ${isOpen ? `
+          <div class="issue-body" style="border-top:1px solid ${issueBorder(issueKey)}">
+            <div class="section-label" style="margin-bottom:6px">Accounts & Lines of Business (${Object.keys(d.acctMap).length})</div>
+            ${acctTableHTML(d.acctMap, issueColor(issueKey), issueBorder(issueKey))}
+          </div>` : ""}
+        </div>`;
+    }).join("");
+
+    main.innerHTML = `
+      <div class="detail-header">
+        <div class="detail-title" style="color:${issueColor(issueKey)}">${sel.label}</div>
+        <div class="detail-sub">${sel.allRows.length} total exception lines · ${sel.reps.size} reps affected · ${sel.stores.size} stores</div>
+      </div>
+      <div class="issue-desc" style="background:${issueBg(issueKey)};border:1px solid ${issueBorder(issueKey)};border-radius:10px;padding:14px 16px;margin-bottom:20px;font-size:12px;line-height:1.7;color:#475569">
+        <strong style="color:${issueColor(issueKey)}">What this means:</strong> ${info.description || "See report for details."}
+      </div>
+      <div class="list-label" style="margin-bottom:10px">Reps Affected (${repEntries.length})</div>
+      ${repCardsHTML}`;
+    return;
+  }
+
+  // ── Rep / Store views (existing logic) ───────────────────────────────────────
+  const issueEntries = Object.entries(sel.issues).sort((a,b) => b[1].count - a[1].count);
+
+  const badgeHTML = issueEntries.map(([k, d]) => `
+    <div class="issue-badge" style="color:${issueColor(k)};background:${issueBg(k)};border-color:${issueBorder(k)}">
+      ${k} <strong>×${d.count}</strong>
+    </div>`).join("");
+
+  const subLine = currentView === "rep"
+    ? `Store: ${sel.sub} · ${sel.allRows.length} total exception lines · ${issueEntries.length} issue types`
+    : `${sel.allRows.length} total exception lines · ${sel.reps.size} reps · ${issueEntries.length} issue types`;
+
+  const cardsHTML = issueEntries.map(([k, d]) => {
+    const info   = ISSUE_INFO[k] || {};
+    const isOpen = expandedIssue === k;
+    let repBreakdown = "";
+    if (currentView === "store") {
+      const rb = {};
+      sel.allRows.filter(r => getIssueKey(r) === k && r.rep).forEach(r => { rb[r.rep] = (rb[r.rep]||0)+1; });
+      const rbEntries = Object.entries(rb).sort((a,b) => b[1]-a[1]);
+      if (rbEntries.length) {
+        repBreakdown = `<div style="margin-top:12px">
+          <div class="section-label">By Rep</div>
+          <div>${rbEntries.map(([rep,cnt]) => `
+            <span class="rep-tag" style="background:rgba(0,0,0,0.08);border:1px solid ${issueBorder(k)};color:${issueColor(k)}">
+              ${rep} <strong>×${cnt}</strong>
+            </span>`).join("")}
+          </div>
+        </div>`;
+      }
+    }
+
+    const bodyHTML = isOpen ? `
+      <div class="issue-body" style="border-top:1px solid ${issueBorder(k)}">
+        <div class="issue-desc"><strong style="color:${issueColor(k)}">What this means:</strong> ${info.description||"See report for details."}</div>
+        <div style="margin-bottom:10px">
+          <div class="section-label" style="margin-bottom:6px">Accounts & Lines of Business (${Object.keys(d.acctMap).length})</div>
+          ${acctTableHTML(d.acctMap, issueColor(k), issueBorder(k))}
+        </div>
+        ${repBreakdown}
+      </div>` : "";
+
+    return `
+      <div class="issue-card" style="background:${issueBg(k)};border-color:${issueBorder(k)}" onclick="toggleIssue('${k.replace(/'/g,"\\'")}')">
+        <div class="issue-card-header">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div class="issue-icon" style="background:${issueColor(k)}">${d.count}</div>
+            <div>
+              <div class="issue-name" style="color:${issueColor(k)}">${k}</div>
+              <div class="issue-meta">${Object.keys(d.acctMap).length} account${Object.keys(d.acctMap).length!==1?"s":""} · ${d.count} line${d.count!==1?"s":""} · ${acctDateRange(d.acctMap)}</div>
+            </div>
+          </div>
+          <div class="issue-toggle">${isOpen ? "▲" : "▼"}</div>
+        </div>
+        ${bodyHTML}
+      </div>`;
+  }).join("");
+
+  main.innerHTML = `
+    <div class="detail-header">
+      <div class="detail-title">${sel.label}</div>
+      <div class="detail-sub">${subLine}</div>
+    </div>
+    <div class="badge-row">${badgeHTML}</div>
+    ${cardsHTML}`;
+}
+
+function render() {
+  renderSidebar();
+  renderMain();
+}
+
+// ── Event handlers ────────────────────────────────────────────────────────────
+function onSearch() {
+  searchQuery = document.getElementById("search-input").value;
+  renderSidebar();
+}
+
+function switchView(v) {
+  currentView  = v;
+  selectedKey  = null;
+  expandedIssue = null;
+  searchQuery  = "";
+  document.getElementById("btn-rep").classList.toggle("active",       v === "rep");
+  document.getElementById("btn-store").classList.toggle("active",     v === "store");
+  document.getElementById("btn-exception").classList.toggle("active", v === "exception");
+  document.getElementById("btn-cancel").classList.toggle("active",    v === "cancel");
+  document.getElementById("search-input").value = "";
+  render();
+}
+
+function selectItem(key) {
+  selectedKey   = key;
+  expandedIssue = null;
+  render();
+}
+
+function toggleIssue(key) {
+  expandedIssue = expandedIssue === key ? null : key;
+  renderMain();
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+render();
+</script>
+</body>
+</html>
